@@ -1,15 +1,15 @@
 import json
 
-# works from products.json in local directory
-fn = 'products-250.json'
+# expects this file in local directory
+fn = 'products-all.json'
+skip_sold_out_products = True
 
-# can get last 250 products from https://kindreads.com/products.json?limit=250
+# can get last 250 products without authentication or access token, from https://kindreads.com/products.json?limit=250
 # can get first 250 (alphabetical) products from admin api like this on Windows
 # curl -H "X-Shopify-Access-Token: FILLMEIN" "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,created_at,variants" > products-250.json
 # or this on Linux
 # curl -H 'X-Shopify-Access-Token: FILLMEIN' https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=5 > products-5.json
-
-# known tags, used in tag validation
+# to get all products, use pagination, see getproducts.py. Writes to products-all.json
 
 parent_tags = [
         'Fiction',
@@ -43,6 +43,7 @@ tags_in_collections = {
         'Psychological Thriller':'Mystery and Thriller',
         'Thriller':'Mystery and Thriller',
 
+        # todo, change the rules so you can have history+fiction or politics+fiction without having the (non-fiction) politics and history collection tag?
         'History':'Politics and History',
         'Politics':'Politics and History'
 }
@@ -81,6 +82,7 @@ known_tags = [
         'Graphic Novel',
         'Health',
         'Historical Fiction',
+        'Historical fiction',
         'History',
         'Holiday',
         'Horror',
@@ -119,15 +121,17 @@ known_tags = [
         'Romance',
         'Science',
         'Science Fiction',
-        #'Self help',
         'Self Help',
         'Self-Help',
+        'Self-help',
         'Short Stories',
         'Sociology',
         'Spanish',
         'Sports',
         'Spy',
         'Staff Pick',
+        'Staff pick',
+        'staff pick',
         'Summer',
         'Technology',
         'Teen',
@@ -138,10 +142,16 @@ known_tags = [
         'Writing'
 ]
 
+# log error as csv line for importing into a spreadsheet
+def log_error(isbn,title,tags,error_desc):
+    print(isbn,',"',title,'","',tags,'",',error_desc,sep='')
+    return
+
 # validates tags and prints error messages
 def validate_tags(product):
     isbn = product['id']
     tags = product['tags']
+    tags_s = product['tags']
     title = product['title']
     created_at = product['created_at']
 
@@ -155,49 +165,64 @@ def validate_tags(product):
         available = inventory_quantity>0
 
     if type(tags) != list:
-        # admin api returns comma-separated list of tags, make it a list
-        w_tags = tags.split(',')
-        tags = []
-        for tag in w_tags:
-            tags.append(tag.strip())
+        if len(tags) > 0:
+            # admin api returns comma-separated list of tags, make it a list
+            w_tags = tags.split(',')
+            tags = []
+            for tag in w_tags:
+                tags.append(tag.strip())
+        else:
+            # no tags at all
+            tags = []
 
     # Let's skip books not in inventory
-    if not available:
-        #print('Skipping sold-out',title,'created at',created_at)
+    if not available and skip_sold_out_products:
+        return
+
+    # Rule: Must be at least one tag! To help categorize the product
+    if len(tags) == 0:
+        log_error(isbn,title,tags_s,'no tags')
+        # stop here, no point going further
         return
 
     # Rule: Must be a known tag
     for tag in tags:
         if tag not in known_tags:
-            print('Error:',isbn,'has unknown tag"',tag,'"')
+            log_error(isbn,title,tags_s,'unknown tag %s' % tag)
 
     # Rule: Must be exactly one parent tag
     n = len(set(tags).intersection(set(parent_tags)))
     if n == 0:
-        print('Error:',isbn,title,'missing parent tag, expecting one of',parent_tags, 'got',tags)
+        log_error(isbn,title,tags_s,'missing parent tag')
     elif n>1 and 'Kids' not in tags:
-        print('Error:',isbn,title,'has',n,'parent tags, for Adult expecting only one of',parent_tags,'got',tags)
+        log_error(isbn,title,tags_s,'Adult book has %s parent tags' % n)
     elif n>2 and 'Kids' in tags:
-        print('Error:',isbn,title,'has',n,'parent tags, for Kids expecting at most one more of',parent_tags,'got',tags)
+        # Some kids books are marked fiction or nonfiction so allow 2 parent tags
+        log_error(isbn,title,tags_s,'Kids book has %s parent tags' % n)
 
     # Rule: For Kids, must be at most one age tag
     if 'Kids' in tags:
         n = len(set(tags).intersection(set(kids_age_tags)))
-        # pot-pourri doesn't have an age group tag, so allow n == 0
+        # pot-pourri and gift sets don't have an age group tag, so allow n == 0
         if n>1:
-            print('Error:',isbn,title,'has',n,'age group tags, expecting at most one of',kids_age_tags)
-
+            log_error(isbn,title,tags_s,'has %s age group tags' % n)
 
     # Rule: for the combo collections, need consistent tags
+    # Combo collections are defined to not show sold-out products and can only look at one tag to do this
     for tag in tags:
         if tag in tags_in_collections:
             if tags_in_collections[tag] not in tags:
-                print('Error:',isbn,title,'has tag',tag,'but not the collection tag',tags_in_collections[tag])
+                log_error(isbn,title,tags_s,'has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
 
 with open(fn,encoding="utf-8") as f:
     j = json.loads(f.read())
     products = j['products']
     print('Reading from',fn)
     print('Validating tags for',len(products),'products')
+    if skip_sold_out_products:
+        print('Skipping sold-out products')
+    else:
+        print('Including sold-out products')
+    print('isbn,title,tags,error',sep='')
     for product in products:
         validate_tags(product)
