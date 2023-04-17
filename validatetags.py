@@ -6,28 +6,38 @@ skip_sold_out_products = True
 
 # can get last 250 products without authentication or access token, from https://kindreads.com/products.json?limit=250
 # can get first 250 (alphabetical) products from admin api like this on Windows
-# curl -H "X-Shopify-Access-Token: FILLMEIN" "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,created_at,variants" > products-250.json
+# curl -H "X-Shopify-Access-Token: FILLMEIN" "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,published_at,variants" > products-250.json
 # or this on Linux
 # curl -H 'X-Shopify-Access-Token: FILLMEIN' https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=5 > products-5.json
 # to get all products, use pagination, see getproducts.py. Writes to products-all.json
 
-parent_tags = [
-        'Fiction',
-        'Kids',
+nonfiction_tags = [
         'Non-fiction',
+        'Non Fiction',
+        'Non fiction',
         'Non-Fiction'
 ]
+parent_tags = nonfiction_tags + [
+        'Fiction',
+        'Kids'
+]
 
-kids_age_tags = [
+kids_board_tags = [
         'Board Books: Ages 0-3',
         'Board books: Ages 0-3',
-        'board books: ages 0-3',
-        'Middle Grade: Ages 8-12',
-        'Middle grade: Ages 8-12',
-        'Picture Books: Ages 3-8',
-        'Picture books: Ages 3-8',
-        'Teen'
+        'board books: ages 0-3'
 ]
+kids_picture_tags = [
+        'Picture Books: Ages 3-8',
+        'Picture books: Ages 3-8'
+]
+kids_middle_tags = [
+        'Middle Grade: Ages 8-12',
+        'Middle grade: Ages 8-12'
+]
+teen_tags = ['Teen']
+
+kids_age_tags = kids_board_tags + kids_picture_tags + kids_middle_tags + teen_tags
 
 # tags that need an accompanying collection tag
 tags_in_collections = {
@@ -67,6 +77,7 @@ known_tags = [
         'Contemporary',
         'Cookbook',
         'Crime',
+        'crime',
         'Culture',
         'Economics',
         'Education',
@@ -104,6 +115,8 @@ known_tags = [
         'Mystery and Thriller',
         'Non-fiction',
         'Non-Fiction',
+        'Non Fiction',
+        'Non fiction',
         'Paranormal',
         'Parenting',
         'Philosophy',
@@ -142,18 +155,95 @@ known_tags = [
         'Writing'
 ]
 
-# log error as csv line for importing into a spreadsheet
-def log_error(isbn,title,tags,error_desc):
-    print(isbn,',"',title,'","',tags,'",',error_desc,sep='')
-    return
+# list not used, this is just for reference and matches shelves as at April 2023
+shelves = [
+    'Fiction',
+    'Non-Fiction',
+    'French Fiction',
+    'French Non-Fiction',
+    'Kids Board Books',
+    'Kids Picture Books',
+    'Kids Middle Grade',
+    'Teen',
+    'French Kids Board Books',
+    'French Kids Picture Books',
+    'French Kids Middle Grade',
+    'French Teen',
+    'Cookbooks',
+    'Folio Society/Vintage',
+    'Kids Speciality',
+    'Seasonal',
+    'Sets and Anthologies'
+]
 
-# validates tags and prints error messages
+# best guess as to which shelf the book will be on
+def get_shelf(tags):
+
+    if type(tags) != list:
+        if len(tags) > 0:
+            # admin api returns comma-separated list of tags, make it a list
+            w_tags = tags.split(',')
+            tags = []
+            for tag in w_tags:
+                tags.append(tag.strip())
+        else:
+            # no tags at all
+            tags = []
+
+    shelf = 'Unknown'
+    
+    # Adult fiction
+    if 'Fiction' in tags and 'Kids' not in tags:
+        if 'French' in tags:
+            shelf = 'French Fiction'
+        else:
+            shelf = 'Fiction'
+    
+    # Adult nonfiction
+    if set(tags).intersection(set(nonfiction_tags)):
+        if 'French' in tags:
+            shelf = 'French Non-Fiction'
+        else:
+            shelf = 'Non-Fiction'
+    
+    # Cookbooks have a separate shelf
+    if 'Cookbook' in tags:
+        shelf = 'Cookbooks'
+        # todo is there a separate shelf for French cookbooks?
+
+    # Kids
+    if 'Kids' in tags:
+        if 'French' in tags:
+            if set(tags).intersection(set(kids_board_tags)):
+                shelf = 'French Kids Board'
+            elif set(tags).intersection(set(kids_picture_tags)):
+                shelf = 'French Kids Picture'
+            elif set(tags).intersection(set(kids_middle_tags)):
+                shelf = 'French Kids Middle Grades'
+            elif set(tags).intersection(set(teen_tags)):
+                shelf = 'French Teen'
+            else:
+                shelf = 'French Kids'
+        else:
+            if set(tags).intersection(set(kids_board_tags)):
+                shelf = 'Kids Board'
+            elif set(tags).intersection(set(kids_picture_tags)):
+                shelf = 'Kids Picture'
+            elif set(tags).intersection(set(kids_middle_tags)):
+                shelf = 'Kids Middle Grades'
+            elif set(tags).intersection(set(teen_tags)):
+                shelf = 'Teen'
+            else:
+                shelf = 'Kids'
+
+    return shelf
+    
+# validates tags and returns error messages or empty list
 def validate_tags(product):
-    isbn = product['id']
     tags = product['tags']
     tags_s = product['tags']
-    title = product['title']
-    created_at = product['created_at']
+
+    errors = []
 
     available = None
     # public products.json looks like this
@@ -177,52 +267,68 @@ def validate_tags(product):
 
     # Let's skip books not in inventory
     if not available and skip_sold_out_products:
-        return
+        return errors
 
     # Rule: Must be at least one tag! To help categorize the product
     if len(tags) == 0:
-        log_error(isbn,title,tags_s,'no tags')
+        errors.append('no tags')
         # stop here, no point going further
-        return
+        return errors
 
     # Rule: Must be a known tag
     for tag in tags:
         if tag not in known_tags:
-            log_error(isbn,title,tags_s,'unknown tag %s' % tag)
+            errors.append('unknown tag %s' % tag)
 
     # Rule: Must be exactly one parent tag
     n = len(set(tags).intersection(set(parent_tags)))
     if n == 0:
-        log_error(isbn,title,tags_s,'missing parent tag')
+        errors.append('missing parent tag')
     elif n>1 and 'Kids' not in tags:
-        log_error(isbn,title,tags_s,'Adult book has %s parent tags' % n)
+        errors.append('Adult book has %s parent tags' % n)
     elif n>2 and 'Kids' in tags:
         # Some kids books are marked fiction or nonfiction so allow 2 parent tags
-        log_error(isbn,title,tags_s,'Kids book has %s parent tags' % n)
+        errors.append('Kids book has %s parent tags' % n)
 
     # Rule: For Kids, must be at most one age tag
     if 'Kids' in tags:
         n = len(set(tags).intersection(set(kids_age_tags)))
         # pot-pourri and gift sets don't have an age group tag, so allow n == 0
         if n>1:
-            log_error(isbn,title,tags_s,'has %s age group tags' % n)
+            errors.append('Kids book has %s age group tags' % n)
 
     # Rule: for the combo collections, need consistent tags
     # Combo collections are defined to not show sold-out products and can only look at one tag to do this
     for tag in tags:
         if tag in tags_in_collections:
             if tags_in_collections[tag] not in tags:
-                log_error(isbn,title,tags_s,'has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
+                errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
 
-with open(fn,encoding="utf-8") as f:
-    j = json.loads(f.read())
-    products = j['products']
-    print('Reading from',fn)
-    print('Validating tags for',len(products),'products')
-    if skip_sold_out_products:
-        print('Skipping sold-out products')
-    else:
-        print('Including sold-out products')
-    print('isbn,title,tags,error',sep='')
-    for product in products:
-        validate_tags(product)
+    return errors
+
+def main():
+    with open(fn,encoding="utf-8") as f:
+        j = json.loads(f.read())
+        products = j['products']
+        print('Reading from',fn)
+        print('Validating tags for',len(products),'products')
+        if skip_sold_out_products:
+            print('Skipping sold-out products')
+        else:
+            print('Including sold-out products')
+        print('isbn,title,tags,created_at,error',sep='')
+        for product in products:
+            errors = validate_tags(product)
+            if len(errors)>0:
+                for error in errors:
+                    isbn = product['id']
+                    tags_s = product['tags']
+                    title = product['title']
+                    published_at = product['published_at']
+                    published_at_date = published_at[0:len('yyyy-mm-dd')]
+                    # problem if title contains a double quote - cheat and remove it before printing
+                    title = title.replace('"','')
+                    print(isbn,',"',title,'","',tags_s,'",',published_at_date,',',error,sep='')
+
+if __name__ == '__main__':
+    main()
