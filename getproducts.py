@@ -8,7 +8,7 @@ fn = 'products-all.json'
 # don't commit secret to GitHub
 ACCESS_TOKEN = 'FILLMEIN'
 
-request = "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,created_at,variants"
+request = "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,published_at,vendor,variants"
 headers = {'X-Shopify-Access-Token': ACCESS_TOKEN}
 
 more = True
