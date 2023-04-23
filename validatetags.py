@@ -199,6 +199,13 @@ def get_shelf(tags):
         else:
             shelf = 'Fiction'
     
+    # Graphic novels
+    if 'Graphic Novel' in tags:
+        if 'French' in tags:
+            shelf = 'Bande Dessinée'
+        else:
+            shelf = 'Graphic Novels'
+
     # Adult nonfiction
     if set(tags).intersection(set(nonfiction_tags)):
         if 'French' in tags:
@@ -206,10 +213,12 @@ def get_shelf(tags):
         else:
             shelf = 'Non-Fiction'
     
-    # Cookbooks have a separate shelf
+    # English Cookbooks have a separate shelf
     if 'Cookbook' in tags:
-        shelf = 'Cookbooks'
-        # todo is there a separate shelf for French cookbooks?
+        if 'French' in tags:
+            shelf = 'French Non-Fiction'
+        else:
+            shelf = 'Cookbooks'
 
     # Kids
     if 'Kids' in tags:
