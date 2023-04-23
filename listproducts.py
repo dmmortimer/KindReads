@@ -12,10 +12,28 @@ else:
     outfile = 'products-all.csv'
 
 # quick-and-dirty, treat last word as last name. not always correct.
-# useful for locating books on fiction shelves which are stored alphabetically by author last name
-def lastname(name):
+# useful for locating books on shelves which are stored alphabetically by author last name
+def lastname(vendor):
+
+    name = vendor
+
+    # if a comma-separated list of authors, use the first one
+    if vendor.find(',')>0:
+        name = vendor[:vendor.find(',')]       # items from the beginning through stop-1
+
     words = name.split()
-    return words[-1].strip()
+    ln = words[-1].strip()
+
+    lastname_prefixes = {'le','la','de','du','Le','La','De','Du','LE','LA','DE','DU','van','Van','VAN'}
+
+    prefixes_present = list(set(words).intersection(lastname_prefixes))
+    if len(prefixes_present)>0:
+        ln = prefixes_present[0] + ' ' + ln
+
+    return ln
+
+assert(lastname('Daphne du Maurier') == 'du Maurier')
+assert(lastname('Daphne du Maurier, John le Carre') == 'du Maurier')
 
 # log product as csv line for importing into a spreadsheet
 # returns 0 if product skipped because no inventory, else returns 1
