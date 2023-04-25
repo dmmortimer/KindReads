@@ -232,7 +232,7 @@ def get_shelf(tags):
             elif set(tags).intersection(set(teen_tags)):
                 shelf = 'French Teen'
             else:
-                shelf = 'French Kids'
+                shelf = 'French Kids Missing Age Tag'
         else:
             if set(tags).intersection(set(kids_board_tags)):
                 shelf = 'Kids Board'
@@ -243,7 +243,7 @@ def get_shelf(tags):
             elif set(tags).intersection(set(teen_tags)):
                 shelf = 'Teen'
             else:
-                shelf = 'Kids'
+                shelf = 'Kids Missing Age Tag'
 
     return shelf
     
@@ -299,11 +299,11 @@ def validate_tags(product):
         # Some kids books are marked fiction or nonfiction so allow 2 parent tags
         errors.append('Kids book has %s parent tags' % n)
 
-    # Rule: For Kids, must be at most one age tag
+    # Rule: For Kids, must be exactly one age tag
     if 'Kids' in tags:
         n = len(set(tags).intersection(set(kids_age_tags)))
-        # pot-pourri and gift sets don't have an age group tag, so allow n == 0
-        if n>1:
+        # note pot-pourri and gift sets don't have an age group tag, so will always show up
+        if n != 1:
             errors.append('Kids book has %s age group tags' % n)
 
     # Rule: for the combo collections, need consistent tags
@@ -325,19 +325,24 @@ def main():
             print('Skipping sold-out products')
         else:
             print('Including sold-out products')
-        print('isbn,title,tags,created_at,error',sep='')
+        print('id,isbn,title,tags,created_at,error',sep='')
         for product in products:
             errors = validate_tags(product)
             if len(errors)>0:
                 for error in errors:
-                    isbn = product['id']
+                    id = product['id']
+                    isbn = product['variants'][0]['sku']
+                    if isbn == None:
+                        isbn = ''
                     tags_s = product['tags']
                     title = product['title']
                     published_at = product['published_at']
-                    published_at_date = published_at[0:len('yyyy-mm-dd')]
+                    published_at_date = 'N/A'   # happens if product is in draft status
+                    if published_at:
+                        published_at_date = published_at[0:len('yyyy-mm-dd')]
                     # problem if title contains a double quote - cheat and remove it before printing
                     title = title.replace('"','')
-                    print(isbn,',"',title,'","',tags_s,'",',published_at_date,',',error,sep='')
+                    print(id,',',isbn,',"',title,'","',tags_s,'",',published_at_date,',',error,sep='')
 
 if __name__ == '__main__':
     main()

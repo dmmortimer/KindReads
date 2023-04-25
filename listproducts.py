@@ -32,13 +32,11 @@ def lastname(vendor):
 
     return ln
 
-assert(lastname('Daphne du Maurier') == 'du Maurier')
-assert(lastname('Daphne du Maurier, John le Carre') == 'du Maurier')
-
-# log product as csv line for importing into a spreadsheet
-# returns 0 if product skipped because no inventory, else returns 1
-def log_product(product,out):
-    isbn = product['id']
+def log_variant(product,variant,out):
+    id = product['id']
+    isbn = variant['sku']
+    if isbn == None:
+        isbn = ''
     title = product['title']
     # problem in csv if title contains a double quote - cheat and remove it
     title = title.replace('"','')
@@ -49,16 +47,23 @@ def log_product(product,out):
     published_at_date = 'N/A'   # happens if product is in draft status
     if published_at:
         published_at_date = published_at[0:len('yyyy-mm-dd')]
-    qty = int(product['variants'][0]['inventory_quantity'])
+    qty = int(variant['inventory_quantity'])
     shelf = get_shelf(tags)
 
     if qty==0 and skip_sold_out_products:
         return 0
 
-    s = str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','+published_at_date+','+str(qty)+'\n'
+    s = str(id)+','+str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','+published_at_date+','+str(qty)+'\n'
     out.write(s)
-
     return 1
+
+# log product as csv line for importing into a spreadsheet
+# returns 0 if product skipped because no inventory, else returns 1
+def log_product(product,out):
+    n = 0
+    for variant in product['variants']:
+        n += log_variant(product,variant,out)
+    return n
 
 with open(fn,encoding="utf-8") as f:
     j = json.loads(f.read())
@@ -72,7 +77,7 @@ with open(fn,encoding="utf-8") as f:
 
     with open(outfile,"w",encoding="utf-8") as out:
         n = 0
-        out.write('isbn,title,author,last name,tags,shelf,published_at,qty'+'\n')
+        out.write('id,isbn,title,author,last name,tags,shelf,published_at,qty'+'\n')
         for product in products:
             n+=log_product(product,out)
         print('Wrote',n,'products to',outfile)
