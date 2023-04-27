@@ -1,9 +1,11 @@
 import json
 from validatetags import get_shelf
+from validatetags import is_gift_set
 
 # expects this file in local directory
 fn = 'products-all.json'
 skip_sold_out_products = True
+skip_gift_sets = True
 outfile = None
 if skip_sold_out_products:
     outfile = 'products-in-stock.csv'
@@ -48,12 +50,16 @@ def log_variant(product,variant,out):
     if published_at:
         published_at_date = published_at[0:len('yyyy-mm-dd')]
     qty = int(variant['inventory_quantity'])
+    price = variant['price']
     shelf = get_shelf(tags)
 
     if qty==0 and skip_sold_out_products:
         return 0
 
-    s = str(id)+','+str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','+published_at_date+','+str(qty)+'\n'
+    if is_gift_set(id) and skip_gift_sets:
+        return 0
+
+    s = str(id)+','+str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','+published_at_date+','+str(qty)+','+price+'\n'
     out.write(s)
     return 1
 
@@ -77,7 +83,7 @@ with open(fn,encoding="utf-8") as f:
 
     with open(outfile,"w",encoding="utf-8") as out:
         n = 0
-        out.write('id,isbn,title,author,last name,tags,shelf,published_at,qty'+'\n')
+        out.write('id,isbn,title,author,last name,tags,shelf,published_at,qty,price'+'\n')
         for product in products:
             n+=log_product(product,out)
         print('Wrote',n,'products to',outfile)
