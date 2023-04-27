@@ -11,6 +11,19 @@ skip_sold_out_products = True
 # curl -H 'X-Shopify-Access-Token: FILLMEIN' https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=5 > products-5.json
 # to get all products, use pagination, see getproducts.py. Writes to products-all.json
 
+# products that are not books, can be useful to skip these for reporting
+# todo could improve this by using product category or type, or even tags, and not have hard-coded list of product ids
+gift_sets = [
+    7798515499159,  # Children's Surprise Box of Books
+    7286971564183,  # Christmas Gift Card
+    5672176124055,  # Don't feel like choosing? A Surprise Box of Books is for you!
+    7286938042519,  # Gratitude Gift Card
+    7286983229591   # Happy Holidays Gift Card
+]
+
+def is_gift_set(id):
+    return id in gift_sets
+
 nonfiction_tags = [
         'Non-fiction',
         'Non Fiction',
