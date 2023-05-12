@@ -18,11 +18,22 @@ gift_sets = [
     7286971564183,  # Christmas Gift Card
     5672176124055,  # Don't feel like choosing? A Surprise Box of Books is for you!
     7286938042519,  # Gratitude Gift Card
-    7286983229591   # Happy Holidays Gift Card
+    7286983229591,  # Happy Holidays Gift Card
+    7281284055191,  # Secret Santa Gift Card
+    7240056537239   # Kids Advent Calendar Gift Set (12 or 24 Books)
+]
+
+pot_pourri = [
+    7988045938839,  # Pot-Pourri 2015
+    7326988370071,  # Pot-Pourri 2021
+    7869301096599   # Pot-Pourri 2022
 ]
 
 def is_gift_set(id):
     return id in gift_sets
+
+def is_pot_pourri(id):
+    return id in pot_pourri
 
 nonfiction_tags = [
         'Non-fiction',
@@ -264,6 +275,7 @@ def get_shelf(tags):
 def validate_tags(product):
     tags = product['tags']
     tags_s = product['tags']
+    id = product['id']
 
     errors = []
 
@@ -293,7 +305,9 @@ def validate_tags(product):
 
     # Rule: Must be at least one tag! To help categorize the product
     if len(tags) == 0:
-        errors.append('no tags')
+        # Gift sets are an exception, don't need tags
+        if not is_gift_set(id):
+            errors.append('no tags')
         # stop here, no point going further
         return errors
 
@@ -315,8 +329,9 @@ def validate_tags(product):
     # Rule: For Kids, must be exactly one age tag
     if 'Kids' in tags:
         n = len(set(tags).intersection(set(kids_age_tags)))
-        # note pot-pourri and gift sets don't have an age group tag, so will always show up
-        if n != 1:
+        # Exception: Pot-Pourri doesn't need an age group tag
+        # Exception: Gift sets don't need tags
+        if n != 1 and not is_gift_set(id) and not is_pot_pourri(id):
             errors.append('Kids book has %s age group tags' % n)
 
     # Rule: for the combo collections, need consistent tags
