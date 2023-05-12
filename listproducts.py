@@ -1,6 +1,7 @@
 import json
 from validatetags import get_shelf
 from validatetags import is_gift_set
+from validatetags import is_pot_pourri
 
 # expects this file in local directory
 fn = 'products-all.json'
@@ -51,7 +52,11 @@ def log_variant(product,variant,out):
         published_at_date = published_at[0:len('yyyy-mm-dd')]
     qty = int(variant['inventory_quantity'])
     price = variant['price']
-    shelf = get_shelf(tags)
+    shelf = 'Unknown'
+    if is_pot_pourri(id):
+        shelf = 'Materials Management'
+    else:
+        shelf = get_shelf(tags)
 
     if qty==0 and skip_sold_out_products:
         return 0
