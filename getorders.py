@@ -4,6 +4,7 @@ from validatetags import get_shelf
 import time
 
 fn = 'orderitems.csv'
+orders_since = '2023-05-11' # choose wisely, this report is slow
 
 # don't commit secret to GitHub
 ACCESS_TOKEN = 'FILLMEIN'
@@ -48,11 +49,15 @@ num_orders=0
 more = True
 
 limit=250
-request = "https://friends-bookshop.myshopify.com/admin/api/2023-04/orders.json?status=any&fields=order_number,created_at,line_items&limit="+str(limit)
-#request = "https://friends-bookshop.myshopify.com/admin/api/2023-04/orders.json?status=any&created_at_max=2022-01-11&fields=order_number,created_at,line_items&limit="+str(limit)
+# orders since the dawn of time
+#request = "https://friends-bookshop.myshopify.com/admin/api/2023-04/orders.json?status=any&fields=order_number,created_at,line_items&limit="+str(limit)
+# orders on or after given date
+request = "https://friends-bookshop.myshopify.com/admin/api/2023-04/orders.json?status=any&created_at_min="+orders_since+"&fields=order_number,created_at,line_items&limit="+str(limit)
 headers = {'X-Shopify-Access-Token': ACCESS_TOKEN}
 
 with open(fn, "w", encoding='utf-8') as f:
+
+    print('Fetching orders placed on or after', orders_since)
 
     f.write('order_number,created_at,isbn,title,author,price,tags,shelf\n')
     while more:
