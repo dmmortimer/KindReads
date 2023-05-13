@@ -87,6 +87,7 @@ known_tags = [
         'Adventure',
         'Animals',
         'Arabic',
+        'Art',
         'Astrology',
         'Autobiography',
         'Biography',
@@ -216,6 +217,10 @@ def get_shelf(tags):
 
     shelf = 'Unknown'
     
+    if 'Classic' in tags:
+        shelf = 'Folio Society/Vintage'
+        return shelf
+
     # Adult fiction
     if 'Fiction' in tags and 'Kids' not in tags:
         if 'French' in tags:
