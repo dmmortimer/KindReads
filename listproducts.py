@@ -20,6 +20,10 @@ def lastname(vendor):
 
     name = vendor
 
+    # ignore everything after first bracket, to handle e.g. Charles Dickens (Introduction by Rosalind Valland)
+    if vendor.find('(')>0:
+        name = vendor[:vendor.find('(')]       # items from the beginning through stop-1
+
     # if a comma-separated list of authors, use the first one
     if vendor.find(',')>0:
         name = vendor[:vendor.find(',')]       # items from the beginning through stop-1
