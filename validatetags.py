@@ -35,7 +35,9 @@ pot_pourri = [
 confirmed_sets_or_false_positives = [
     7176181088407,  # Bedtime (Baxter Bear Collection)
     7176181022871,  # Dinnertime (Baxter Bear Collection)
-
+    7974125633687,  # Disney's: Winnie the Pooh Storybook Collection (Disney Storybook Collections)
+    6579553173655,  # Learn and Grow on the Go! (Nick Jr. Carry-along Boxed Set)
+    7855282847895   # Yasmina Series (Set of 4 Books) Arabic سلسلة ياسمينة
 ]
 
 
@@ -364,7 +366,6 @@ def validate_tags(product):
                 errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
 
     # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
-    #title_words = title.lower().split()
     title_words = re.split(r'\W+',title.lower())
     if 'set' in title_words  or 'collection' in title_words:
         if id not in confirmed_sets_or_false_positives and id not in gift_sets:
