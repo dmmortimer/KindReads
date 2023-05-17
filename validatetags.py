@@ -1,11 +1,12 @@
 import json
+import math
+import re
 
 # expects this file in local directory
 fn = 'products-all.json'
 skip_sold_out_products = True
 
-# can get last 250 products without authentication or access token, from https://kindreads.com/products.json?limit=250
-# can get first 250 (alphabetical) products from admin api like this on Windows
+# get first 250 (alphabetical) products from admin api like this on Windows
 # curl -H "X-Shopify-Access-Token: FILLMEIN" "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,published_at,variants" > products-250.json
 # or this on Linux
 # curl -H 'X-Shopify-Access-Token: FILLMEIN' https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=5 > products-5.json
@@ -28,6 +29,25 @@ pot_pourri = [
     7326988370071,  # Pot-Pourri 2021
     7869301096599   # Pot-Pourri 2022
 ]
+
+# Sets/collections that have been checked in Room 149 and we have all the books in the set
+# If we don't have all books, the words set or collection need to be removed from the title
+confirmed_sets_or_false_positives = [
+    7176181088407,  # Bedtime (Baxter Bear Collection)
+    7176181022871,  # Dinnertime (Baxter Bear Collection)
+
+]
+
+
+# Price guidelines
+min_price = 0.99
+max_price = 20
+price_exceptions = {
+    '7949689258135': 99.99,     # Angel Illyria Haunted
+    '7949689520279': 69.00,     # Spike: Into the Light
+    '7949689979031': 59.99      # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
+}
+# all Classic books bypass the max price check, no need to list as exceptions
 
 def is_gift_set(id):
     return id in gift_sets
@@ -204,20 +224,21 @@ shelves = [
 # best guess as to which shelf the book will be on
 def get_shelf(tags):
 
-    if type(tags) != list:
-        if len(tags) > 0:
-            # admin api returns comma-separated list of tags, make it a list
-            w_tags = tags.split(',')
-            tags = []
-            for tag in w_tags:
-                tags.append(tag.strip())
-        else:
-            # no tags at all
-            tags = []
+    if len(tags) > 0:
+        # admin api returns comma-separated list of tags, make it a list
+        w_tags = tags.split(',')
+        tags = []
+        for tag in w_tags:
+            tags.append(tag.strip())
+    else:
+        # no tags at all
+        tags = []
 
     shelf = 'Unknown'
     
     if 'Classic' in tags:
+        # Not always correct, some books tagged Classic are in regular Fiction/Non-Fiction sections
+        # Perhaps we need a specific Folio Society tag
         shelf = 'Folio Society/Vintage'
         return shelf
 
@@ -277,32 +298,28 @@ def get_shelf(tags):
     return shelf
     
 # validates tags and returns error messages or empty list
+# new: also validates prices
+# new: also checks if title contains set or collection and is not on exception list
+# todo - refactor as this is now misnamed
 def validate_tags(product):
     tags = product['tags']
-    tags_s = product['tags']
     id = product['id']
+    title = product['title']
 
     errors = []
 
-    available = None
-    # public products.json looks like this
-    if 'available' in product['variants'][0]:
-        available = product['variants'][0]['available']
-    else:
-        # admin api json looks like this
-        inventory_quantity = int(product['variants'][0]['inventory_quantity'])
-        available = inventory_quantity>0
+    inventory_quantity = int(product['variants'][0]['inventory_quantity'])
+    available = inventory_quantity>0
 
-    if type(tags) != list:
-        if len(tags) > 0:
-            # admin api returns comma-separated list of tags, make it a list
-            w_tags = tags.split(',')
-            tags = []
-            for tag in w_tags:
-                tags.append(tag.strip())
-        else:
-            # no tags at all
-            tags = []
+    if len(tags) > 0:
+        # admin api returns comma-separated list of tags, make it a list
+        w_tags = tags.split(',')
+        tags = []
+        for tag in w_tags:
+            tags.append(tag.strip())
+    else:
+        # no tags at all
+        tags = []
 
     # Let's skip books not in inventory
     if not available and skip_sold_out_products:
@@ -346,6 +363,43 @@ def validate_tags(product):
             if tags_in_collections[tag] not in tags:
                 errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
 
+    # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
+    #title_words = title.lower().split()
+    title_words = re.split(r'\W+',title.lower())
+    if 'set' in title_words  or 'collection' in title_words:
+        if id not in confirmed_sets_or_false_positives and id not in gift_sets:
+            errors.append('has a title suggesting a set or collection but is not on list of confirmed sets or false positives')
+
+    # price check, for first variant
+    price = float(product['variants'][0]['price'])
+
+    # If product is on price exceptions list, no further checks needed (it should follow the $X.99 convention but this isn't checked)
+    id_s = str(id)
+    if id_s in price_exceptions:
+        price_exception = price_exceptions[id_s]
+        if price != price_exception:
+            errors.append('has price %s not matching expected price %s. To change expected price, update the validation script.' % (price,price_exception))
+        return errors   # I don't love this return statement, should refactor
+
+    # All prices end in $X.99
+    cents = round(price - math.floor(price),2)
+    if cents != 0.99:
+        # Pot-Pourri doesn't follow $X.99 convention
+        if id not in pot_pourri:
+            errors.append('has price %s not ending in .99 counter to our pricing guidelines' % (price))
+
+    # Check for unusually low price
+    elif price < min_price:
+        errors.append('has price %s below minimum expected price %s' % (price,min_price))
+
+    # Check for unusually high price
+    elif price > max_price:
+        # Gift sets can be more expensive, don't check them
+        if id not in gift_sets:
+            # Classic can have any price
+            if 'Classic' not in tags:
+                errors.append('has price %s above maximum price %s' % (price,max_price))
+
     return errors
 
 def main():
@@ -376,6 +430,11 @@ def main():
                     # problem if title contains a double quote - cheat and remove it before printing
                     title = title.replace('"','')
                     print(id,',',isbn,',"',title,'","',tags_s,'",',published_at_date,',',error,sep='')
+
+    print_known_tags = False;
+    if print_known_tags:
+        for tag in known_tags:
+            print(tag)
 
 if __name__ == '__main__':
     main()
