@@ -299,6 +299,18 @@ def get_shelf(tags):
 
     return shelf
     
+def validate_before_import(tags,price,title):
+    # hack let's make a fake product
+    product = {}
+    product['tags'] = tags
+    product['id'] = 1   # dummy value
+    product['title'] = title
+    product['variants'] = []
+    product['variants'].append({})
+    product['variants'][0]['inventory_quantity'] = 1
+    product['variants'][0]['price'] = price
+    return validate_tags(product)
+
 # validates tags and returns error messages or empty list
 # new: also validates prices
 # new: also checks if title contains set or collection and is not on exception list
@@ -332,38 +344,36 @@ def validate_tags(product):
         # Gift sets are an exception, don't need tags
         if not is_gift_set(id):
             errors.append('no tags')
-        # stop here, no point going further
-        return errors
+    else:
+        # Rule: Must be a known tag
+        for tag in tags:
+            if tag not in known_tags:
+                errors.append('unknown tag %s' % tag)
 
-    # Rule: Must be a known tag
-    for tag in tags:
-        if tag not in known_tags:
-            errors.append('unknown tag %s' % tag)
+        # Rule: Must be exactly one parent tag
+        n = len(set(tags).intersection(set(parent_tags)))
+        if n == 0:
+            errors.append('missing parent tag')
+        elif n>1 and 'Kids' not in tags:
+            errors.append('Adult book has %s parent tags' % n)
+        elif n>2 and 'Kids' in tags:
+            # Some kids books are marked fiction or nonfiction so allow 2 parent tags
+            errors.append('Kids book has %s parent tags' % n)
 
-    # Rule: Must be exactly one parent tag
-    n = len(set(tags).intersection(set(parent_tags)))
-    if n == 0:
-        errors.append('missing parent tag')
-    elif n>1 and 'Kids' not in tags:
-        errors.append('Adult book has %s parent tags' % n)
-    elif n>2 and 'Kids' in tags:
-        # Some kids books are marked fiction or nonfiction so allow 2 parent tags
-        errors.append('Kids book has %s parent tags' % n)
+        # Rule: For Kids, must be exactly one age tag
+        if 'Kids' in tags:
+            n = len(set(tags).intersection(set(kids_age_tags)))
+            # Exception: Pot-Pourri doesn't need an age group tag
+            # Exception: Gift sets don't need tags
+            if n != 1 and not is_gift_set(id) and not is_pot_pourri(id):
+                errors.append('Kids book has %s age group tags' % n)
 
-    # Rule: For Kids, must be exactly one age tag
-    if 'Kids' in tags:
-        n = len(set(tags).intersection(set(kids_age_tags)))
-        # Exception: Pot-Pourri doesn't need an age group tag
-        # Exception: Gift sets don't need tags
-        if n != 1 and not is_gift_set(id) and not is_pot_pourri(id):
-            errors.append('Kids book has %s age group tags' % n)
-
-    # Rule: for the combo collections, need consistent tags
-    # Combo collections are defined to not show sold-out products and can only look at one tag to do this
-    for tag in tags:
-        if tag in tags_in_collections:
-            if tags_in_collections[tag] not in tags:
-                errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
+        # Rule: for the combo collections, need consistent tags
+        # Combo collections are defined to not show sold-out products and can only look at one tag to do this
+        for tag in tags:
+            if tag in tags_in_collections:
+                if tags_in_collections[tag] not in tags:
+                    errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
 
     # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
     title_words = re.split(r'\W+',title.lower())
@@ -382,15 +392,8 @@ def validate_tags(product):
             errors.append('has price %s not matching expected price %s. To change expected price, update the validation script.' % (price,price_exception))
         return errors   # I don't love this return statement, should refactor
 
-    # All prices end in $X.99
-    cents = round(price - math.floor(price),2)
-    if cents != 0.99:
-        # Pot-Pourri doesn't follow $X.99 convention
-        if id not in pot_pourri:
-            errors.append('has price %s not ending in .99 counter to our pricing guidelines' % (price))
-
     # Check for unusually low price
-    elif price < min_price:
+    if price < min_price:
         errors.append('has price %s below minimum expected price %s' % (price,min_price))
 
     # Check for unusually high price
@@ -400,6 +403,13 @@ def validate_tags(product):
             # Classic can have any price
             if 'Classic' not in tags:
                 errors.append('has price %s above maximum price %s' % (price,max_price))
+
+    # All prices end in $X.99
+    cents = round(price - math.floor(price),2)
+    if cents != 0.99:
+        # Pot-Pourri doesn't follow $X.99 convention, nor do gift sets
+        if id not in pot_pourri and not is_gift_set(id):
+            errors.append('has price %s not ending in .99 counter to our pricing guidelines' % (price))
 
     return errors
 
