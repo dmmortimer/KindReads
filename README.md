@@ -27,3 +27,6 @@ listproducts.py
 getorders.py
 - fetches all orders then fetches each line item and outputs a csv of books in orders, with tags
 - expensive to do all orders, use carefully
+
+validate-import-csv.py
+- validate a product CSV file before it is imported into Shopify

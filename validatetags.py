@@ -6,6 +6,10 @@ import re
 fn = 'products-all.json'
 skip_sold_out_products = True
 
+# Write HTML file with all the book cover images for visual review
+write_covers_html = True
+outfn = 'covers.html'
+
 # get first 250 (alphabetical) products from admin api like this on Windows
 # curl -H "X-Shopify-Access-Token: FILLMEIN" "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,published_at,variants" > products-250.json
 # or this on Linux
@@ -44,12 +48,17 @@ confirmed_sets_or_false_positives = [
 # Price guidelines
 min_price = 0.99
 max_price = 20
+min_compare_price = 5.99    # Pricing guide says 8.00 but need to confirm with Aida. For now, use 5.99 so no failed validations
+# beware, uses product handle (id) as key, not isbn
+# all Classic books bypass the max price check, no need to list as exceptions
 price_exceptions = {
     '7949689258135': 99.99,     # Angel Illyria Haunted
     '7949689520279': 69.00,     # Spike: Into the Light
-    '7949689979031': 59.99      # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
+    '7949689979031': 59.99,     # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
+    '8008024850583': 39.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
+    '8008025145495': 49.99,     # Angel and Faith: Season Ten Volume 3 - United
+    '8008024883351': 44.99      # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
 }
-# all Classic books bypass the max price check, no need to list as exceptions
 
 def is_gift_set(id):
     return id in gift_sets
@@ -299,7 +308,7 @@ def get_shelf(tags):
 
     return shelf
     
-def validate_before_import(tags,price,title):
+def validate_before_import(tags,price,compareprice,title):
     # hack let's make a fake product
     product = {}
     product['tags'] = tags
@@ -309,6 +318,7 @@ def validate_before_import(tags,price,title):
     product['variants'].append({})
     product['variants'][0]['inventory_quantity'] = 1
     product['variants'][0]['price'] = price
+    product['variants'][0]['compare_at_price'] = compareprice
     return validate_tags(product)
 
 # validates tags and returns error messages or empty list
@@ -326,7 +336,7 @@ def validate_tags(product):
     available = inventory_quantity>0
 
     if len(tags) > 0:
-        # admin api returns comma-separated list of tags, make it a list
+        # convert comma-separated list of tags into a list
         w_tags = tags.split(',')
         tags = []
         for tag in w_tags:
@@ -383,6 +393,13 @@ def validate_tags(product):
 
     # price check, for first variant
     price = float(product['variants'][0]['price'])
+    compareprice = 0
+    if 'compare_at_price' in product['variants'][0]:
+        compareprice = product['variants'][0]['compare_at_price']
+        if compareprice:
+            compareprice = float(product['variants'][0]['compare_at_price'])
+        else:
+            compareprice = 0
 
     # If product is on price exceptions list, no further checks needed (it should follow the $X.99 convention but this isn't checked)
     id_s = str(id)
@@ -411,10 +428,31 @@ def validate_tags(product):
         if id not in pot_pourri and not is_gift_set(id):
             errors.append('has price %s not ending in .99 counter to our pricing guidelines' % (price))
 
+    # compare-at price should be higher than price (although Shopify will ignore it if it is)
+    if 0>price>=compareprice:
+        errors.append('has price at or higher than compare price, this is unexpected')
+
+    # If a book is priced at $8 or less dollars, leave the “Compare at” column empty
+    if compareprice>0 and compareprice<min_compare_price:
+        errors.append('has compare-at price %s less than %s, leave blank or set to 0 per our pricing guidelines' % (compareprice, min_compare_price))
+
     return errors
 
 def main():
+
+    if write_covers_html:
+        f2 = open(outfn,'w',encoding='utf-8')
+
     with open(fn,encoding="utf-8") as f:
+
+        if write_covers_html:
+            # crude! there must be a more elegant way but this works for now
+            f2.write('<html>\n')
+            f2.write('<head>\n')
+            f2.write('<title>Book cover images</title>\n')
+            f2.write('</head>\n')
+            f2.write('<body>\n')
+
         j = json.loads(f.read())
         products = j['products']
         print('Reading from',fn)
@@ -425,13 +463,14 @@ def main():
             print('Including sold-out products')
         print('id,isbn,title,tags,created_at,error',sep='')
         for product in products:
+            isbn = product['variants'][0]['sku']
+            if isbn == None:
+                isbn = ''
+
             errors = validate_tags(product)
             if len(errors)>0:
                 for error in errors:
                     id = product['id']
-                    isbn = product['variants'][0]['sku']
-                    if isbn == None:
-                        isbn = ''
                     tags_s = product['tags']
                     title = product['title']
                     published_at = product['published_at']
@@ -442,10 +481,37 @@ def main():
                     title = title.replace('"','')
                     print(id,',',isbn,',"',title,'","',tags_s,'",',published_at_date,',',error,sep='')
 
-    print_known_tags = False;
+            if write_covers_html:
+                # todo refactor as this is now checked multiple places
+                inventory_quantity = int(product['variants'][0]['inventory_quantity'])
+                include = inventory_quantity>0 or not skip_sold_out_products
+                if include:
+                    image = product['images'][0]
+                    width = int(image['width'])
+                    height = int(image['height'])
+                    imageurl = image['src']
+                    img = '<img src="'+imageurl+'"'
+                    if height>500:
+                        # scale down the really large images
+                        img += ' height=500'
+                    img += '>'
+                    # todo make it a hyperlink to the product on the store
+                    '''
+                    storelink = 'https://kindreads.com/products/'+
+                        <a href="link address"><img src="image destination"></a>
+                    '''
+                    f2.write(img+'\n')
+
+    if write_covers_html:
+        # close out the html file
+        f2.write('</body>\n')
+        f2.write('</html>\n')
+        print('Generated',outfn,'which can be opened in a browser to review the book cover images')
+
+    print_known_tags = False
     if print_known_tags:
         for tag in known_tags:
             print(tag)
-
+        
 if __name__ == '__main__':
     main()
