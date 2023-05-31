@@ -57,7 +57,8 @@ price_exceptions = {
     '7949689979031': 59.99,     # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
     '8008024850583': 39.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
     '8008025145495': 49.99,     # Angel and Faith: Season Ten Volume 3 - United
-    '8008024883351': 44.99      # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
+    '8008024883351': 44.99,     # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
+    '8010714841239': 99.99      # Sex by Madonna
 }
 
 def is_gift_set(id):
@@ -138,6 +139,7 @@ known_tags = [
         'Economics',
         'Education',
         'Empowered Women',
+        'Environment',
         'Essays',
         'Family',
         'Fantasy',

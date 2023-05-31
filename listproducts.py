@@ -31,7 +31,7 @@ def lastname(vendor):
     words = name.split()
     ln = words[-1].strip()
 
-    lastname_prefixes = {'le','la','de','du','Le','La','De','Du','LE','LA','DE','DU','van','Van','VAN'}
+    lastname_prefixes = {'de','De','DE','du','Du','DU','El','la','La','LA','le','Le','LE','St.','van','Van','VAN'}
 
     prefixes_present = list(set(words).intersection(lastname_prefixes))
     if len(prefixes_present)>0:
@@ -56,6 +56,11 @@ def log_variant(product,variant,out):
         published_at_date = published_at[0:len('yyyy-mm-dd')]
     qty = int(variant['inventory_quantity'])
     price = variant['price']
+    compareprice = variant['compare_at_price']
+    if not compareprice or compareprice == '0.00':
+        compareprice=''
+    else:
+        compareprice='$'+compareprice
     shelf = 'Unknown'
     if is_pot_pourri(id):
         shelf = 'Materials Management'
@@ -68,7 +73,8 @@ def log_variant(product,variant,out):
     if is_gift_set(id) and skip_gift_sets:
         return 0
 
-    s = str(id)+','+str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','+published_at_date+','+str(qty)+','+price+'\n'
+    s = str(id)+','+str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','\
+        +published_at_date+','+str(qty)+','+price+','+compareprice+'\n'
     out.write(s)
     return 1
 
@@ -92,7 +98,7 @@ with open(fn,encoding="utf-8") as f:
 
     with open(outfile,"w",encoding="utf-8") as out:
         n = 0
-        out.write('id,isbn,title,author,last name,tags,shelf,published_at,qty,price'+'\n')
+        out.write('id,isbn,title,author,last name,tags,shelf,published_at,qty,price,compareprice'+'\n')
         for product in products:
             n+=log_product(product,out)
         print('Wrote',n,'products to',outfile)
