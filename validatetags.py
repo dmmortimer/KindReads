@@ -185,6 +185,7 @@ known_tags = [
         'Police',
         'Politics',
         'Politics and History',
+        'Portuguese',
         'Psychological Thriller',
         'Psychology',
         'Queer',
@@ -326,6 +327,7 @@ def validate_before_import(tags,price,compareprice,title):
 # validates tags and returns error messages or empty list
 # new: also validates prices
 # new: also checks if title contains set or collection and is not on exception list
+# new: also checks that the product is set to require shipping - we don't sell digital products on the site
 # todo - refactor as this is now misnamed
 def validate_tags(product):
     tags = product['tags']
@@ -350,6 +352,11 @@ def validate_tags(product):
     # Let's skip books not in inventory
     if not available and skip_sold_out_products:
         return errors
+
+    # This must be set for orders to get fulfilled correctly
+    requires_shipping = product['variants'][0]['requires_shipping']
+    if not requires_shipping:
+        errors.append('shipping incorrectly configured as a digital product instead of physical product')
 
     # Rule: Must be at least one tag! To help categorize the product
     if len(tags) == 0:
