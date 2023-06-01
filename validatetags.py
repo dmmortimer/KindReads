@@ -75,7 +75,8 @@ nonfiction_tags = [
 ]
 parent_tags = nonfiction_tags + [
         'Fiction',
-        'Kids'
+        'Kids',
+        'Poetry'
 ]
 
 kids_board_tags = [
@@ -284,6 +285,13 @@ def get_shelf(tags):
         else:
             shelf = 'Cookbooks'
 
+    # Poetry is shelved with nonfiction, but Kids overrides
+    if 'Poetry' in tags:
+        if 'French' in tags:
+            shelf = 'French Non-Fiction'
+        else:
+            shelf = 'Non-Fiction'
+
     # Kids
     if 'Kids' in tags:
         if 'French' in tags:
@@ -373,10 +381,14 @@ def validate_tags(product):
         n = len(set(tags).intersection(set(parent_tags)))
         if n == 0:
             errors.append('missing parent tag')
+
+        # Exception: Pot-Pourri can have multiple parent tags e.g. F, NF, Poetry
+        if is_pot_pourri(id):
+            pass
         elif n>1 and 'Kids' not in tags:
             errors.append('Adult book has %s parent tags' % n)
         elif n>2 and 'Kids' in tags:
-            # Some kids books are marked fiction or nonfiction so allow 2 parent tags
+            # Some kids books are marked fiction or nonfiction as well so allow 2 parent tags
             errors.append('Kids book has %s parent tags' % n)
 
         # Rule: For Kids, must be exactly one age tag
