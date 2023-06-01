@@ -98,7 +98,7 @@ with open(fn,encoding="utf-8") as f:
 
     with open(outfile,"w",encoding="utf-8") as out:
         n = 0
-        out.write('id,isbn,title,author,last name,tags,shelf,published_at,qty,price,compareprice'+'\n')
+        out.write('id,isbn,title,author,last name,tags,shelf,uploaded,qty,price,compareprice'+'\n')
         for product in products:
             n+=log_product(product,out)
         print('Wrote',n,'products to',outfile)
