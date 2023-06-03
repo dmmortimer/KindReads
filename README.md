@@ -30,3 +30,12 @@ getorders.py
 
 validate-import-csv.py
 - validate a product CSV file before it is imported into Shopify
+
+fopla_csv_generator.rb
+ - Ruby script that reads ISBNs from a CSV, pulls book information via API and outputs a CSV for uploading to Shopify
+ - Outputs up to three CSVs:
+   - Completed book profiles (meaning all of the attributes have a value)
+   - Incomplete (meaning the book was found in the db, but not all attributes were retrievable)
+   - Not found (ISBNs weren't in the db)
+ - Requires API token obtained separately
+ - API documentation here: https://isbndb.com/apidocs/v2
