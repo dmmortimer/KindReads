@@ -48,7 +48,8 @@ confirmed_sets_or_false_positives = [
 # Price guidelines
 min_price = 0.99
 max_price = 20
-min_compare_price = 5.99    # Pricing guide says 8.00 but need to confirm with Aida. For now, use 5.99 so no failed validations
+min_compare_price = 5.99    # For now, use 5.99 so no failed validations
+#min_compare_price = 7.99    # Gives errors, review and fix these books first before committing this change
 # beware, uses product handle (id) as key, not isbn
 # all Classic books bypass the max price check, no need to list as exceptions
 price_exceptions = {
@@ -330,6 +331,7 @@ def validate_before_import(tags,price,compareprice,title):
     product['variants'][0]['inventory_quantity'] = 1
     product['variants'][0]['price'] = price
     product['variants'][0]['compare_at_price'] = compareprice
+    product['variants'][0]['requires_shipping'] = True
     return validate_tags(product)
 
 # validates tags and returns error messages or empty list
@@ -446,7 +448,8 @@ def validate_tags(product):
     cents = round(price - math.floor(price),2)
     if cents != 0.99:
         # Pot-Pourri doesn't follow $X.99 convention, nor do gift sets
-        if id not in pot_pourri and not is_gift_set(id):
+        # Exception to allow 1.49 as Val is using this on some kids books
+        if id not in pot_pourri and not is_gift_set(id) and price != 1.49:
             errors.append('has price %s not ending in .99 counter to our pricing guidelines' % (price))
 
     # compare-at price should be higher than price (although Shopify will ignore it if it is)
