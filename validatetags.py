@@ -116,7 +116,7 @@ tags_in_collections = {
         'Politics':'Politics and History'
 }
 
-known_tags = [
+known_tags = parent_tags + kids_age_tags + [
         'Academic',
         'Adventure',
         'Animals',
@@ -126,9 +126,6 @@ known_tags = [
         'Autobiography',
         'Biography',
         'BIPOC',
-        'Board Books: Ages 0-3',
-        'Board books: Ages 0-3',
-        'board books: ages 0-3',
         'Business',
         'Canadian',
         'Classic',
@@ -146,7 +143,6 @@ known_tags = [
         'Family',
         'Fantasy',
         'Fantasy & Sci-Fi',
-        'Fiction',
         'French',
         'Friendship',
         'Gift Card',
@@ -162,28 +158,18 @@ known_tags = [
         'Indigenous',
         'Inspiring Bios',
         'International',
-        'Kids',
         'LGBT',
         'Medicine',
         'Memoir',
         'Memoirs and Biographies',
         'Mental Health',
-        'Middle Grade: Ages 8-12',
-        'Middle grade: Ages 8-12',
         'Music',
         'Mystery',
         'Mystery and Thriller',
-        'Non-fiction',
-        'Non-Fiction',
-        'Non Fiction',
-        'Non fiction',
         'Paranormal',
         'Parenting',
         'Philosophy',
         'Photography',
-        'Picture books: Ages 3-8',
-        'Picture Books: Ages 3-8',
-        'Poetry',
         'Police',
         'Politics',
         'Politics and History',
@@ -208,7 +194,6 @@ known_tags = [
         'staff pick',
         'Summer',
         'Technology',
-        'Teen',
         'Thriller',
         'Travel',
         'True Crime',
@@ -534,7 +519,8 @@ def main():
 
     print_known_tags = False
     if print_known_tags:
-        for tag in known_tags:
+        print('== List of known tags ==')
+        for tag in sorted(known_tags,key=str.lower):
             print(tag)
         
 if __name__ == '__main__':
