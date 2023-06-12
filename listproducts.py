@@ -28,9 +28,17 @@ def lastname(vendor):
     if vendor.find(',')>0:
         name = vendor[:vendor.find(',')]       # items from the beginning through stop-1
 
+    # last name is the last word
     words = name.split()
     ln = words[-1].strip()
 
+    # ignore suffixes like MD and Jr.
+    lastname_suffixes = {'Jr.','MD'}
+    if ln in lastname_suffixes:
+        # not gonna work if that's actually their last name, or their whole name, but deal with it if/when
+        ln = words[-2].strip()
+
+    # prefixes considered part of the last name
     lastname_prefixes = {'de','De','DE','du','Du','DU','El','la','La','LA','le','Le','LE','St.','van','Van','VAN'}
 
     prefixes_present = list(set(words).intersection(lastname_prefixes))
@@ -38,6 +46,14 @@ def lastname(vendor):
         ln = prefixes_present[0] + ' ' + ln
 
     return ln
+
+if False:
+    assert lastname('John Hough Jr.') == 'Hough'
+    assert lastname('Melvin Conner MD') == 'Conner'
+    assert lastname('John le Carré') == 'le Carré'
+    assert lastname('Charles Dickens (Introduction by Rolalind Valland)') == 'Dickens'
+    assert lastname('Vincent van Gogh')== 'van Gogh'
+    assert lastname('Cary Fagan, Banafsheh Erfanian')== 'Fagan'
 
 def log_variant(product,variant,out):
     id = product['id']
