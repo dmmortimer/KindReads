@@ -365,18 +365,16 @@ def validate_tags(product):
                 errors.append('unknown tag %s' % tag)
 
         # Rule: Must be exactly one parent tag
-        n = len(set(tags).intersection(set(parent_tags)))
+        parent_tags_present = set(tags).intersection(set(parent_tags))
+        n = len(parent_tags_present)
         if n == 0:
             errors.append('missing parent tag')
 
         # Exception: Pot-Pourri can have multiple parent tags e.g. F, NF, Poetry
         if is_pot_pourri(id):
             pass
-        elif n>1 and 'Kids' not in tags:
-            errors.append('Adult book has %s parent tags' % n)
-        elif n>2 and 'Kids' in tags:
-            # Some kids books are marked fiction or nonfiction as well so allow 2 parent tags
-            errors.append('Kids book has %s parent tags' % n)
+        elif n>1:
+            errors.append('more than one parent tag %s' % parent_tags_present)
 
         # Rule: For Kids, must be exactly one age tag
         if 'Kids' in tags:
