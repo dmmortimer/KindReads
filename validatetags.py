@@ -48,8 +48,7 @@ confirmed_sets_or_false_positives = [
 # Price guidelines
 min_price = 0.99
 max_price = 20
-min_compare_price = 5.99    # For now, use 5.99 so no failed validations
-#min_compare_price = 7.99    # Gives errors, review and fix these books first before committing this change
+min_compare_price = 7.99
 # beware, uses product handle (id) as key, not isbn
 # all Classic books bypass the max price check, no need to list as exceptions
 price_exceptions = {
