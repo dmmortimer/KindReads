@@ -2,17 +2,16 @@
 import csv
 from validatetags import validate_before_import
 
-#fn = '2023-05-13-FOPLA-incomp-notfnd-book-profiles-scans_ONEtoCHECK.csv'
-#fn = '2023-05-13-FOPLA-complete-book-profiles-scans - 2023-05-13-FOPLA-complete-book-profiles-scans.csv'
-#fn = 'Jordan/2023-05-12-FOPLA-not_found-book-profiles-scans - 2023-05-12-FOPLA-not_found-book-profiles-scans.csv'
-#fn = 'Jordan/2023-05-12-FOPLA-incomplete-book-profiles-scans - 2023-05-12-FOPLA-incomplete-book-profiles-.csv'
-fn = 'Jordan/2023-05-12-FOPLA-complete-book-profiles-scans - 2023-05-12-FOPLA-complete-book-profiles-scans.csv'
+fn = 'Jordan/2023-05-30-FOPLA-not_found-book-profiles-scans - 2023-05-30-FOPLA-not_found-book-profiles-scans.csv'
+fn = 'Jordan/2023-05-30-FOPLA-incomplete-book-profiles-scans - 2023-05-30-FOPLA-incomplete-book-profiles-.csv'
+fn = 'Jordan/2023-05-30-FOPLA-complete-book-profiles-scans - 2023-05-30-FOPLA-complete-book-profiles-scans.csv'
 
 # Write HTML file with all the book cover images for visual review
 outfn = 'import-covers.html'
 
 print('Reading from',fn)
 n=0
+num_with_errors = 0
 with open(fn,encoding="utf-8") as f, \
     open(outfn,'w',encoding='utf-8') as f2:
 
@@ -41,16 +40,20 @@ with open(fn,encoding="utf-8") as f, \
         if row[20] !='':
             compareprice = float(row[20])
         #print('Checking',isbn,title)
-        errors = validate_before_import(tags,price,compareprice,title)
+        errors = validate_before_import(tags,price,compareprice,title,author)
         if len(errors)>0:
+            num_with_errors += 1
             for error in errors:
                 print(isbn,title,error)
-        
+
         f2.write('<img src="'+imagesrc+'">\n')
 
     # close out the html file
     f2.write('</body>\n')
     f2.write('</html>\n')
 
-print('Validated',n,'items')
+if num_with_errors:
+    print('Validated',n,'items -',num_with_errors,'had errors, printed above')
+else:
+    print('Validated',n,'items, no errors found')
 print('Generated',outfn,'which can be opened in a browser to review the book cover images')

@@ -304,12 +304,13 @@ def get_shelf(tags):
 
     return shelf
     
-def validate_before_import(tags,price,compareprice,title):
+def validate_before_import(tags,price,compareprice,title,author):
     # hack let's make a fake product
     product = {}
     product['tags'] = tags
     product['id'] = 1   # dummy value
     product['title'] = title
+    product['vendor'] = author
     product['variants'] = []
     product['variants'].append({})
     product['variants'][0]['inventory_quantity'] = 1
@@ -327,6 +328,7 @@ def validate_tags(product):
     tags = product['tags']
     id = product['id']
     title = product['title']
+    author = product['vendor']
 
     errors = []
 
@@ -441,6 +443,12 @@ def validate_tags(product):
     # If a book is priced at $8 or less dollars, leave the “Compare at” column empty
     if compareprice>0 and compareprice<min_compare_price:
         errors.append('has compare-at price %s less than %s, leave blank or set to 0 per our pricing guidelines' % (compareprice, min_compare_price))
+
+    # Make sure author (vendor) is filled in
+    if author == 'N/A':
+        errors.append('has author set to N/A')
+    elif len(author)==0:
+        errors.append('has no author')
 
     return errors
 
