@@ -12,8 +12,6 @@ def validate_csv(csv_file):
     # https://www.reddit.com/r/cs50/comments/fwohlq/final_project_difficult_using_flask_request_and/
     fileContent = StringIO(csv_file.read().decode('utf-8'))
 
-    # code copied from validate-import-csv.py, todo refactor to reduce duplicated code
-    # todo all flask code into github
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
         if row[0] == 'Handle':
@@ -53,12 +51,8 @@ def covers_from_csv(csv_file):
     result += '</head>\n'
     result += '<body>\n'
 
-    # needed to fix _csv.Error: iterator should return strings, not bytes (the file should be opened in text mode)
-    # https://stackoverflow.com/questions/47828854/fileobject-passing-threw-csv-reader-python-3-6
-    # https://www.reddit.com/r/cs50/comments/fwohlq/final_project_difficult_using_flask_request_and/
     fileContent = StringIO(csv_file.read().decode('utf-8'))
 
-    # code copied from validate-import-csv.py, todo refactor to reduce duplicated code
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
         if row[0] == 'Handle':
