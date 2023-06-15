@@ -1,0 +1,23 @@
+<!doctype html>
+<title>Kind Reads Tools</title>
+<h1>Book Covers</h1>
+
+<p>Background: One of the fields in the import CSV file is Image Src. This is a URL to the product image --
+in our case, the book cover image, which Shopify stores internally after reading it once from the URL. We use ISBNdb to populate this field, but ISBNdb doesn't always
+give us a good image. Sometimes it's a generic "Book Cover Not Available" image, and sometimes
+it's a small image that doesn't look great on our store. Shopify scales large images down but cannot scale small images up.
+It's best to fix the image in the CSV before doing the product import so that we don't have to edit the
+image later in Shopify.</p>
+
+<p>Use this tool to get an HTML file that you can open in a browser to easily review the images on a single page.
+If you see a bad or too-small image, find a link to a better one e.g. on Amazon.ca, and edit the CSV Image Src field
+to use the new link. Repeat and make sure all images look good before importing the products into Shopify.
+
+<p>Choose the CSV file with image URLs (same file as you validated before):</p>
+
+<form method="post" action="/bookcovers" enctype="multipart/form-data">
+    <p><input type="file" name="csv_file" /></p>
+    <p><input type="submit" value="View Book Covers" /></p>
+</form>
+
+<p><a href="/">Back</a>

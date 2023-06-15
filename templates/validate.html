@@ -1,0 +1,15 @@
+<!doctype html>
+<title>Kind Reads Tools</title>
+<h1>Validate CSV</h1>
+
+<p>After you have updated the CSV with tags, price, and any missing information like
+title, author, or image source, validate the CSV file to check for possible errors.
+Review and fix any errors before importing the products into Shopify.</p>
+
+<p>Choose the CSV file to validate:</p>
+<form method="post" action="/validatecsv" enctype="multipart/form-data">
+    <p><input type="file" name="csv_file" /></p>
+    <p><input type="submit" value="Validate CSV file" /></p>
+</form>
+
+<p><a href="/">Back</a>
