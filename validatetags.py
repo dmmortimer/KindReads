@@ -41,7 +41,9 @@ confirmed_sets_or_false_positives = [
     7176181022871,  # Dinnertime (Baxter Bear Collection)
     7974125633687,  # Disney's: Winnie the Pooh Storybook Collection (Disney Storybook Collections)
     6579553173655,  # Learn and Grow on the Go! (Nick Jr. Carry-along Boxed Set)
-    7855282847895   # Yasmina Series (Set of 4 Books) Arabic سلسلة ياسمينة
+    7855282847895,  # Yasmina Series (Set of 4 Books) Arabic سلسلة ياسمينة
+    8020253180055,  # What Set Me Free
+    8020253999255   # Samsung Rising: The Inside Story of the South Korean Giant That Set Out to Beat Apple and Conquer Tech
 ]
 
 
@@ -115,11 +117,12 @@ tags_in_collections = {
         'Politics':'Politics and History'
 }
 
-known_tags = parent_tags + kids_age_tags + [
+language_tags = ['Arabic','French','Inuktitut','Spanish','Portuguese']
+
+known_tags = parent_tags + kids_age_tags + language_tags + [
         'Academic',
         'Adventure',
         'Animals',
-        'Arabic',
         'Art',
         'Astrology',
         'Autobiography',
@@ -142,7 +145,6 @@ known_tags = parent_tags + kids_age_tags + [
         'Family',
         'Fantasy',
         'Fantasy & Sci-Fi',
-        'French',
         'Friendship',
         'Gift Card',
         'Graphic Novel',
@@ -172,7 +174,6 @@ known_tags = parent_tags + kids_age_tags + [
         'Police',
         'Politics',
         'Politics and History',
-        'Portuguese',
         'Psychological Thriller',
         'Psychology',
         'Queer',
@@ -185,7 +186,6 @@ known_tags = parent_tags + kids_age_tags + [
         'Self-help',
         'Short Stories',
         'Sociology',
-        'Spanish',
         'Sports',
         'Spy',
         'Staff Pick',
