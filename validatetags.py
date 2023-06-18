@@ -48,7 +48,8 @@ confirmed_sets_or_false_positives = [
 
 
 # Price guidelines
-min_price = 0.99
+min_kids_price = 0.99
+min_adult_price = 3.99
 max_price = 20
 min_compare_price = 7.99
 # beware, uses product handle (id) as key, not isbn
@@ -304,7 +305,7 @@ def get_shelf(tags):
 
     return shelf
     
-def validate_before_import(tags,price,compareprice,title,author):
+def validate_before_import(tags,price,compareprice,title,author,isbn):
     # hack let's make a fake product
     product = {}
     product['tags'] = tags
@@ -317,6 +318,7 @@ def validate_before_import(tags,price,compareprice,title,author):
     product['variants'][0]['price'] = price
     product['variants'][0]['compare_at_price'] = compareprice
     product['variants'][0]['requires_shipping'] = True
+    product['variants'][0]['sku'] = isbn
     return validate_tags(product)
 
 # validates tags and returns error messages or empty list
@@ -417,11 +419,15 @@ def validate_tags(product):
         return errors   # I don't love this return statement, should refactor
 
     # Check for unusually low price
-    if price < min_price:
-        errors.append('has price %s below minimum expected price %s' % (price,min_price))
+    if 'Kids' in tags:
+        if price < min_kids_price:
+            errors.append('kids book has price %s below minimum expected price %s' % (price,min_kids_price))
+    else:
+        if price < min_adult_price:
+            errors.append('has price %s below minimum expected price %s' % (price,min_adult_price))
 
     # Check for unusually high price
-    elif price > max_price:
+    if price > max_price:
         # Gift sets can be more expensive, don't check them
         if id not in gift_sets:
             # Classic can have any price
@@ -449,6 +455,14 @@ def validate_tags(product):
         errors.append('has author set to N/A')
     elif len(author)==0:
         errors.append('has no author')
+
+    isbn = product['variants'][0]['sku']
+    if isbn == None:
+        isbn = ''
+        
+    # Check for corrupt ISBN
+    if 'E' in isbn:
+        errors.append('has corrupt ISBN %s' % isbn)
 
     return errors
 

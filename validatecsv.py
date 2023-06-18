@@ -28,7 +28,7 @@ def validate_csv(csv_file):
         compareprice = 0
         if row[20] !='':
             compareprice = float(row[20].lstrip('$'))
-        errors = validate_before_import(tags,price,compareprice,title,author)
+        errors = validate_before_import(tags,price,compareprice,title,author,isbn)
         if len(errors)>0:
             num_with_errors += 1
             for error in errors:
