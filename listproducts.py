@@ -39,7 +39,7 @@ def lastname(vendor):
         ln = words[-2].strip()
 
     # prefixes considered part of the last name
-    lastname_prefixes = {'de','De','DE','du','Du','DU','El','la','La','LA','le','Le','LE','St.','van','Van','VAN'}
+    lastname_prefixes = {'de','De','DE','du','Du','DU','El','la','La','LA','le','Le','LE','St.','van','Van','VAN','von','Von','VON'}
 
     prefixes_present = list(set(words).intersection(lastname_prefixes))
     if len(prefixes_present)>0:
