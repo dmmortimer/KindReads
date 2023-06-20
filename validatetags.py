@@ -7,7 +7,8 @@ fn = 'products-all.json'
 skip_sold_out_products = True
 
 # Write HTML file with all the book cover images for visual review
-write_covers_html = True
+#write_covers_html = True
+write_covers_html = False
 outfn = 'covers.html'
 
 # get first 250 (alphabetical) products from admin api like this on Windows
@@ -160,6 +161,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + [
         'Indigenous',
         'Inspiring Bios',
         'International',
+        'Law',
         'LGBT',
         'Medicine',
         'Memoir',
@@ -204,9 +206,9 @@ known_tags = parent_tags + kids_age_tags + language_tags + [
 # list not used, this is just for reference and matches shelves as at April 2023
 shelves = [
     'Fiction',
-    'Non-Fiction',
+    'Nonfiction',
     'French Fiction',
-    'French Non-Fiction',
+    'French Nonfiction',
     'Kids Board Books',
     'Kids Picture Books',
     'Kids Middle Grade',
@@ -238,7 +240,7 @@ def get_shelf(tags):
     shelf = 'Unknown'
     
     if 'Classic' in tags:
-        # Not always correct, some books tagged Classic are in regular Fiction/Non-Fiction sections
+        # Not always correct, some books tagged Classic are in regular Fiction/Nonfiction sections
         # Perhaps we need a specific Folio Society tag
         shelf = 'Folio Society/Vintage'
         return shelf
@@ -260,23 +262,23 @@ def get_shelf(tags):
     # Adult nonfiction
     if set(tags).intersection(set(nonfiction_tags)):
         if 'French' in tags:
-            shelf = 'French Non-Fiction'
+            shelf = 'French Nonfiction'
         else:
-            shelf = 'Non-Fiction'
+            shelf = 'Nonfiction'
     
     # English Cookbooks have a separate shelf
     if 'Cookbook' in tags:
         if 'French' in tags:
-            shelf = 'French Non-Fiction'
+            shelf = 'French Nonfiction'
         else:
             shelf = 'Cookbooks'
 
     # Poetry is shelved with nonfiction, but Kids overrides
     if 'Poetry' in tags:
         if 'French' in tags:
-            shelf = 'French Non-Fiction'
+            shelf = 'French Nonfiction'
         else:
-            shelf = 'Non-Fiction'
+            shelf = 'Nonfiction'
 
     # Kids
     if 'Kids' in tags:
