@@ -2,10 +2,10 @@ from flask import Flask
 from flask import request,make_response
 from flask import render_template
 from validatecsv import validate_csv
-from validatecsv import covers_from_csv
+from validatecsv import imagesrc_list_from_csv
 
 app = Flask(__name__)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = True  # needed?
 
 @app.route('/')
 def mysite_page():
@@ -26,9 +26,11 @@ def validatecsv():
 def bookcovers():
     if request.method == "POST":
         csv_file = request.files["csv_file"]
-        results = covers_from_csv(csv_file)
-        response = make_response(results)
-        response.headers["Content-Disposition"] = "attachment; filename=covers.html"
-        return response
+        try:
+            imagelinks = imagesrc_list_from_csv(csv_file)
+            return make_response(render_template('covers-result.html',results=imagelinks))
+        except UnicodeDecodeError as e:
+            return make_response('Error decoding csv file: '+str(e))
+
     # else GET, display the form
     return render_template('covers.html')

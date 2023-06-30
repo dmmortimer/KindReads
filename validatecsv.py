@@ -2,6 +2,13 @@ import csv
 from io import StringIO
 from validatetags import validate_before_import
 
+# how to return exception? todo refactor to share this code
+# not sure how to return either the rows or a useful error message to user
+'''
+def get_csv_rows(csv_file):
+    return f
+'''
+
 def validate_csv(csv_file):
     result = "Validating " + csv_file.filename + "\n"
     n=0
@@ -10,7 +17,14 @@ def validate_csv(csv_file):
     # needed to fix _csv.Error: iterator should return strings, not bytes (the file should be opened in text mode)
     # https://stackoverflow.com/questions/47828854/fileobject-passing-threw-csv-reader-python-3-6
     # https://www.reddit.com/r/cs50/comments/fwohlq/final_project_difficult_using_flask_request_and/
-    fileContent = StringIO(csv_file.read().decode('utf-8'))
+
+    # todo display the error on the page, not in the download file
+    try:
+        fileContent = StringIO(csv_file.read().decode('utf-8'))
+    except UnicodeDecodeError as e:
+        result += 'Error decoding csv file\n'
+        result += str(e)
+        return result
 
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
@@ -41,15 +55,9 @@ def validate_csv(csv_file):
 
     return result
 
-def covers_from_csv(csv_file):
+def imagesrc_list_from_csv(csv_file):
 
-    # todo use a template
-    result = ''
-    result += '<html>\n'
-    result += '<head>\n'
-    result += '<title>Book cover images</title>\n'
-    result += '</head>\n'
-    result += '<body>\n'
+    imagesrc_list = []
 
     fileContent = StringIO(csv_file.read().decode('utf-8'))
 
@@ -58,10 +66,7 @@ def covers_from_csv(csv_file):
         if row[0] == 'Handle':
             # skip header line
             continue
-        imagesrc = row[24]
-        result += '<img src="'+imagesrc+'">\n'
+        imagesrc_list.append(row[24])
 
-    result += '</body>\n'
-    result += '</html>\n'
+    return imagesrc_list
 
-    return result
