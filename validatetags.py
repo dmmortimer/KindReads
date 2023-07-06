@@ -389,12 +389,19 @@ def validate_tags(product):
             if n != 1 and not is_gift_set(id) and not is_pot_pourri(id):
                 errors.append('Kids book has %s age group tags' % n)
 
+        # Rule: Only Kids can have age tag
+        age_tags_present = set(tags).intersection(set(kids_age_tags))
+        if len(age_tags_present)>0 and 'Kids' not in tags:
+            errors.append('Has age tag %s without Kids tag' % age_tags_present)
+
         # Rule: for the combo collections, need consistent tags
         # Combo collections are defined to not show sold-out products and can only look at one tag to do this
-        for tag in tags:
-            if tag in tags_in_collections:
-                if tags_in_collections[tag] not in tags:
-                    errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
+        # Exception: Kids books as they don't appear in Fiction collections anyway
+        if 'Kids' not in tags:
+            for tag in tags:
+                if tag in tags_in_collections:
+                    if tags_in_collections[tag] not in tags:
+                        errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
 
     # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
     title_words = re.split(r'\W+',title.lower())
