@@ -15,10 +15,12 @@ def mysite_page():
 def validatecsv():
     if request.method == "POST":
         csv_file = request.files["csv_file"]
-        results = validate_csv(csv_file)
-        response = make_response(results)
-        response.headers["Content-Disposition"] = "attachment; filename=result.txt"
-        return response
+        try:
+            results = validate_csv(csv_file)
+            return make_response(render_template('validate-result.html',results=results))
+        except UnicodeDecodeError as e:
+            return make_response('Error decoding csv file: '+str(e))
+
     # else GET, display the form
     return render_template('validate.html')
 
