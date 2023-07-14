@@ -10,7 +10,10 @@ def get_csv_rows(csv_file):
 '''
 
 def validate_csv(csv_file):
-    result = "Validating " + csv_file.filename + "\n"
+
+    results_lines = []
+
+    results_lines.append("Validating " + csv_file.filename + "\n")
     n=0
     num_with_errors = 0
 
@@ -18,13 +21,7 @@ def validate_csv(csv_file):
     # https://stackoverflow.com/questions/47828854/fileobject-passing-threw-csv-reader-python-3-6
     # https://www.reddit.com/r/cs50/comments/fwohlq/final_project_difficult_using_flask_request_and/
 
-    # todo display the error on the page, not in the download file
-    try:
-        fileContent = StringIO(csv_file.read().decode('utf-8'))
-    except UnicodeDecodeError as e:
-        result += 'Error decoding csv file\n'
-        result += str(e)
-        return result
+    fileContent = StringIO(csv_file.read().decode('utf-8'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
@@ -46,14 +43,14 @@ def validate_csv(csv_file):
         if len(errors)>0:
             num_with_errors += 1
             for error in errors:
-                result += '%s %s %s\n' % (isbn,title,error)
+                results_lines.append('%s %s %s\n' % (isbn,title,error))
 
     if num_with_errors:
-        result += 'Validated %s items - %s had errors, printed above' % (n,num_with_errors)
+        results_lines.append( 'Validated %s items - %s had errors, printed above' % (n,num_with_errors))
     else:
-        result += 'Validated %s items, no errors found' % n
+        results_lines.append( 'Validated %s items, no errors found' % n)
 
-    return result
+    return results_lines
 
 def imagesrc_list_from_csv(csv_file):
 
