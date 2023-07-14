@@ -92,9 +92,7 @@ class Fopla
           publish_date: '',
           publisher: '',
           image: '',
-          dimensions: '',
           synopsys: '',
-          authors_formatted_for_audit: '',
         }
 			end
 		end
@@ -109,9 +107,7 @@ class Fopla
 				publish_date: format_publish_date(profile),
 				publisher: profile['publisher'] || 'N/A',
 				image: profile['image'] || 'N/A',
-				dimensions: profile['dimensions'] || '',
 				synopsys: profile['synopsys'] || profile['overview'] || double_check_isbn_13(profile),
-        authors_formatted_for_audit: format_authors_for_audit(profile),
 			}
 
 
@@ -140,14 +136,6 @@ class Fopla
         profile['authors']&.compact.map do |author|
           author.split(', ').reverse.join(' ')
         end.join(', ')
-      else
-        'N/A'
-      end
-    end
-
-    def format_authors_for_audit(profile)
-      if profile['authors'] && !profile['authors'].empty?
-        profile['authors'].join("; ")
       else
         'N/A'
       end
@@ -214,8 +202,8 @@ class Fopla
             '',
             profile[:isbn],
             '0',
-            '',
-            '',
+            'shopify',
+            '1',
             'deny',
             'manual',
             '',
@@ -225,8 +213,8 @@ class Fopla
             profile[:isbn],
             profile[:image],
             '1',
-            profile[:dimensions],
-            profile[:authors_formatted_for_audit],
+            '',
+            '',
           ]
         end
       end
