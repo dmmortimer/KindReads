@@ -2,13 +2,6 @@ import csv
 from io import StringIO
 from validatetags import validate_before_import
 
-# how to return exception? todo refactor to share this code
-# not sure how to return either the rows or a useful error message to user
-'''
-def get_csv_rows(csv_file):
-    return f
-'''
-
 def validate_csv(csv_file):
 
     results_lines = []
@@ -21,7 +14,12 @@ def validate_csv(csv_file):
     # https://stackoverflow.com/questions/47828854/fileobject-passing-threw-csv-reader-python-3-6
     # https://www.reddit.com/r/cs50/comments/fwohlq/final_project_difficult_using_flask_request_and/
 
-    fileContent = StringIO(csv_file.read().decode('utf-8'))
+    # utf-8 doesn't work for these book titles, but latin-1 does
+    # Más Allá del Invierno
+    # I wish I could…Read!
+    # The char … is definitely unicode (U+2026) so I'm not sure what's going on...
+    #fileContent = StringIO(csv_file.read().decode('utf-8'))
+    fileContent = StringIO(csv_file.read().decode('latin-1'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
@@ -56,7 +54,8 @@ def imagesrc_list_from_csv(csv_file):
 
     imagesrc_list = []
 
-    fileContent = StringIO(csv_file.read().decode('utf-8'))
+    #fileContent = StringIO(csv_file.read().decode('utf-8'))
+    fileContent = StringIO(csv_file.read().decode('latin-1'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
