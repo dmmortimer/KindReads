@@ -44,7 +44,8 @@ confirmed_sets_or_false_positives = [
     6579553173655,  # Learn and Grow on the Go! (Nick Jr. Carry-along Boxed Set)
     7855282847895,  # Yasmina Series (Set of 4 Books) Arabic سلسلة ياسمينة
     8020253180055,  # What Set Me Free
-    8020253999255   # Samsung Rising: The Inside Story of the South Korean Giant That Set Out to Beat Apple and Conquer Tech
+    8020253999255,  # Samsung Rising: The Inside Story of the South Korean Giant That Set Out to Beat Apple and Conquer Tech
+    8035473883287   # Venom: The Complete Collection
 ]
 
 
@@ -62,7 +63,8 @@ price_exceptions = {
     '8008024850583': 39.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
     '8008025145495': 49.99,     # Angel and Faith: Season Ten Volume 3 - United
     '8008024883351': 44.99,     # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
-    '8010714841239': 99.99      # Sex by Madonna
+    '8010714841239': 99.99,     # Sex by Madonna
+    '8035475194007': 40.99      # The Art of Maurice Sendak
 }
 
 def is_gift_set(id):
@@ -209,6 +211,8 @@ shelves = [
     'Nonfiction',
     'French Fiction',
     'French Nonfiction',
+    'Graphic Novels',
+    'Bande Dessinée',
     'Kids Board Books',
     'Kids Picture Books',
     'Kids Middle Grade',
