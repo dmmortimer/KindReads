@@ -20,6 +20,8 @@ def validatecsv():
             return make_response(render_template('validate-result.html',results=results))
         except UnicodeDecodeError as e:
             return make_response('Error decoding csv file: '+str(e))
+        except ValueError as e:
+            return make_response('Error reading csv file: '+str(e))
 
     # else GET, display the form
     return render_template('validate.html')
