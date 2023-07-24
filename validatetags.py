@@ -127,6 +127,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + [
         'Academic',
         'Adventure',
         'Animals',
+        'Architecture',
         'Art',
         'Astrology',
         'Autobiography',
