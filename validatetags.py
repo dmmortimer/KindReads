@@ -45,7 +45,9 @@ confirmed_sets_or_false_positives = [
     7855282847895,  # Yasmina Series (Set of 4 Books) Arabic سلسلة ياسمينة
     8020253180055,  # What Set Me Free
     8020253999255,  # Samsung Rising: The Inside Story of the South Korean Giant That Set Out to Beat Apple and Conquer Tech
-    8035473883287   # Venom: The Complete Collection
+    8035473883287,  # Venom: The Complete Collection
+    8037883936919,  # Disney's Storybook Collection
+    8037881577623   # Playhouse Disney Storybook (Storybook Collection)
 ]
 
 
