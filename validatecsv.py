@@ -14,12 +14,21 @@ def validate_csv(csv_file):
     # https://stackoverflow.com/questions/47828854/fileobject-passing-threw-csv-reader-python-3-6
     # https://www.reddit.com/r/cs50/comments/fwohlq/final_project_difficult_using_flask_request_and/
 
-    # utf-8 doesn't work for these book titles, but latin-1 does
+    # utf-8 doesn't work for CSVs from Val with these book titles, but latin-1 does
     # Más Allá del Invierno
     # I wish I could…Read!
     # The char … is definitely unicode (U+2026) so I'm not sure what's going on...
-    #fileContent = StringIO(csv_file.read().decode('utf-8'))
-    fileContent = StringIO(csv_file.read().decode('latin-1'))
+    # When I try these titles in a CSV, utf-8 decodes successfully
+    # Perhaps Val's workflow saves the CSV with some other encoding
+
+    fileContent = None
+    try:
+        fileContent = StringIO(csv_file.read().decode('utf-8'))
+    except UnicodeDecodeError as e:
+        # try again with latin-1
+        print('decode '+csv_file.filename+' as utf-8 gives UnicodeDecodeError '+str(e)+', try again with latin-1')
+        csv_file.seek(0)
+        fileContent = StringIO(csv_file.read().decode('latin-1'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
@@ -54,8 +63,14 @@ def imagesrc_list_from_csv(csv_file):
 
     imagesrc_list = []
 
-    #fileContent = StringIO(csv_file.read().decode('utf-8'))
-    fileContent = StringIO(csv_file.read().decode('latin-1'))
+    fileContent = None
+    try:
+        fileContent = StringIO(csv_file.read().decode('utf-8'))
+    except UnicodeDecodeError as e:
+        # try again with latin-1
+        print('decode '+csv_file.filename+' as utf-8 gives UnicodeDecodeError '+str(e)+', try again with latin-1')
+        csv_file.seek(0)
+        fileContent = StringIO(csv_file.read().decode('latin-1'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
     for row in csvreader:
