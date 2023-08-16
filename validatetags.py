@@ -66,7 +66,9 @@ price_exceptions = {
     '8008025145495': 49.99,     # Angel and Faith: Season Ten Volume 3 - United
     '8008024883351': 44.99,     # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
     '8010714841239': 99.99,     # Sex by Madonna
-    '8035475194007': 40.99      # The Art of Maurice Sendak
+    '8035475194007': 40.99,     # The Art of Maurice Sendak
+    '8050688360599': 29.99,     # The Devil's Playground
+    '8050688393367': 29.99      # Love and Other Stories
 }
 
 def is_gift_set(id):
