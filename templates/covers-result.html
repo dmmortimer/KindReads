@@ -1,6 +1,62 @@
 <!doctype html>
-<title>Book Cover Images</title>
+<html lang="en">
 
-{% for result in results %}
-    <img src={{result}}>
-{% endfor %}
+<head>
+    <title>Kind Reads Tools</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="arrow-right-circle" viewBox="0 0 16 16">
+    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+  </symbol>
+</svg>
+
+<div class="col-lg-8 mx-auto p-4 py-md-5">
+
+    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+        <a href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            <!--svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg-->
+            <img src="{{url_for('static', filename='images/kr_logo.avif')}}" alt="Kind Reads" align="middle">
+            <!--span class="fs-4">Starter template</span-->
+        </a>
+    </header>
+
+    <h3 class="text-body-emphasis">Book covers</h3>
+
+    <p>Retrieving images for {{fn}}</p>
+
+    {% if results|count > 0 %}
+    <p>Total {{results|count}} images</p>
+    {% else %}
+    <p> No images available. {{errormsg}}</p>
+    {% endif %}
+
+    {% for result in results %}
+        <img src={{result}}>
+    {% endfor %}
+
+    <p/>
+
+    <ul class="list-unstyled ps-0">
+      <li>
+        <a class="icon-link mb-1" href="{{ url_for('bookcovers') }}" >
+          <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"/></svg>
+          View book covers from another CSV
+        </a>
+      </li>
+      <li>
+        <a class="icon-link mb-1" href="{{ url_for('mysite_page') }}" >
+          <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"/></svg>
+          Back to Kind Reads Tools home
+        </a>
+      </li>
+    </ul>
+
+</div>
+</body>
+
+

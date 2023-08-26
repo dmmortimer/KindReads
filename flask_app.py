@@ -15,13 +15,13 @@ def mysite_page():
 def validatecsv():
     if request.method == "POST":
         csv_file = request.files["csv_file"]
+        results = []
         try:
             results = validate_csv(csv_file)
-            return make_response(render_template('validate-result.html',results=results))
-        except UnicodeDecodeError as e:
-            return make_response('Error decoding csv file: '+str(e))
-        except ValueError as e:
-            return make_response('Error reading csv file: '+str(e))
+        except Exception as e:
+            results.append('Error reading csv file ' + csv_file.filename + ': ' + str(e))
+
+        return make_response(render_template('validate-result.html',fn=csv_file.filename,results=results))
 
     # else GET, display the form
     return render_template('validate.html')
@@ -30,11 +30,14 @@ def validatecsv():
 def bookcovers():
     if request.method == "POST":
         csv_file = request.files["csv_file"]
+        imagelinks = []
+        errormsg = ''
         try:
             imagelinks = imagesrc_list_from_csv(csv_file)
-            return make_response(render_template('covers-result.html',results=imagelinks))
-        except UnicodeDecodeError as e:
-            return make_response('Error decoding csv file: '+str(e))
+        except Exception as e:
+            errormsg = 'Error reading csv file ' + csv_file.filename + ': ' + str(e)
+
+        return make_response(render_template('covers-result.html',fn=csv_file.filename,results=imagelinks,errormsg=errormsg))
 
     # else GET, display the form
     return render_template('covers.html')

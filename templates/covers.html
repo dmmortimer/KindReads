@@ -1,23 +1,55 @@
 <!doctype html>
-<title>Kind Reads Tools</title>
-<h1>Book Covers</h1>
+<html lang="en">
 
-<p>Background: One of the fields in the import CSV file is Image Src. This is a URL to the product image --
-in our case, the book cover image, which Shopify stores internally after reading it once from the URL. We use ISBNdb to populate this field, but ISBNdb doesn't always
-give us a good image. Sometimes it's a generic "Book Cover Not Available" image, and sometimes
-it's a small image that doesn't look great on our store. Shopify scales large images down but cannot scale small images up.
-It's best to fix the image in the CSV before doing the product import so that we don't have to edit the
-image later in Shopify.</p>
+<head>
+    <title>Kind Reads Tools</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@latest/dist/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 
-<p>Use this tool to view the images on a single page.
-If you see a bad or too-small image, find a link to a better one e.g. on Amazon.ca, and edit the CSV Image Src field
-to use the new link. Repeat and make sure all images look good before importing the products into Shopify.
+<body>
 
-<p>Choose the CSV file with image URLs (same file as you validated before):</p>
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="arrow-right-circle" viewBox="0 0 16 16">
+    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+  </symbol>
+</svg>
 
-<form method="post" action="/bookcovers" enctype="multipart/form-data">
-    <p><input type="file" name="csv_file" /></p>
-    <p><input type="submit" value="View Book Covers" /></p>
-</form>
+<div class="col-lg-8 mx-auto p-4 py-md-5">
 
-<p><a href="/">Back</a>
+    <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+        <a href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            <img src="{{url_for('static', filename='images/kr_logo.avif')}}" alt="Kind Reads" align="middle">
+        </a>
+    </header>
+
+    <h2 class="text-body-emphasis">View book covers</h2>
+
+    <details>
+        <summary>About book covers</summary>
+        One of the fields in the import CSV file is Image Src. This is a URL to the product image --
+        in our case, the book cover image, which Shopify stores internally after reading it once from the URL. We use ISBNdb to populate this field, but ISBNdb doesn't always
+        give us a good image. Sometimes it's a generic "Book Cover Not Available" image, and sometimes
+        it's a small image that doesn't look great on our store. Shopify scales large images down but cannot scale small images up.
+        It's best to fix the image in the CSV before doing the product import so that we don't have to edit the
+        image later in Shopify.
+        <p></p>
+        <p>
+        Use this tool to view the images that will be used.
+        If you see a bad or too-small image, find a link to a better one e.g. on Amazon.ca, and edit the CSV Image Src field
+        to use the new link. Repeat and make sure all images look good before importing the products into Shopify.
+        </p>
+    </details>
+
+    <p class="fs-5 col-md-8">Choose the CSV file with image URLs (same file as you validated before):</p>
+    <form method="post" action="/bookcovers" enctype="multipart/form-data">
+        <p><input type="file" name="csv_file" required/></p>
+        <p><input type="submit" value="View book covers" /></p>
+    </form>
+
+    <a class="icon-link mb-1" href="{{ url_for('mysite_page') }}" >
+      <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"/></svg>
+      Back to Kind Reads Tools home
+    </a>
+</div>
+</body>

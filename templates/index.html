@@ -1,8 +1,52 @@
 <!doctype html>
-<title>Kind Reads Tools</title>
-<h1>Kind Reads Tools</h1>
-<p>These tools are part of the upload process to get new books into the Kind Reads online store.
-The complete upload process is described in the <a href="https://docs.google.com/document/d/1BCiLPedG6uMLOEDYWTGQ6CWbl3cigbEP/edit?usp=drive_link&ouid=100750778402474776279&rtpof=true&sd=true">Kind Reads Upload Guide</a>.
-Use these tools to check the CSV file for errors and review book cover images before uploading.
-<p><a href="{{ url_for('validatecsv') }}">Validate CSV file</a></p>
-<p><a href="{{ url_for('bookcovers') }}">Review book covers from CSV file</a></p>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kind Reads Tools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+      <symbol id="arrow-right-circle" viewBox="0 0 16 16">
+        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+      </symbol>
+    </svg>
+
+    <div class="col-lg-8 mx-auto p-4 py-md-5">
+      <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+        <a href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
+            <img src="{{url_for('static', filename='images/kr_logo.avif')}}" alt="Kind Reads" align="middle">
+        </a>
+      </header>
+
+  <main>
+    <h1 class="text-body-emphasis">Kind Reads Tools</h1>
+    <p class="fs-5 col-md-8">These tools are part of the upload process to get new books into the Kind Reads online store.
+            The complete upload process is described in the <a href="https://docs.google.com/document/d/1BCiLPedG6uMLOEDYWTGQ6CWbl3cigbEP/edit?usp=drive_link&ouid=100750778402474776279&rtpof=true&sd=true">Kind Reads Upload Guide</a>.</p>
+
+<p class="fs-5 col-md-8">After you have updated the product CSV file with tags, price, and any missing information like
+title, author, or image source, validate the CSV file to check for possible errors and review book cover images.
+Fix any errors before importing the products into Shopify.</p>
+
+        <ul class="list-unstyled ps-0">
+          <li>
+            <a class="icon-link mb-1" href="{{ url_for('validatecsv') }}" >
+              <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"/></svg>
+              Validate CSV file
+            </a>
+          </li>
+          <li>
+            <a class="icon-link mb-1" href="{{ url_for('bookcovers') }}">
+              <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"/></svg>
+              View book covers from CSV file
+            </a>
+          </li>
+        </ul>
+  </main>
+</div>
+</body>
+</html>
