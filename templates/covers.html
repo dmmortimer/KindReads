@@ -23,7 +23,7 @@
         </a>
     </header>
 
-    <h2 class="text-body-emphasis">View book covers</h2>
+    <h2 class="text-body-emphasis">View book covers from CSV file</h2>
 
     <details>
         <summary>About book covers</summary>
@@ -41,9 +41,9 @@
         </p>
     </details>
 
-    <p class="fs-5 col-md-8">Choose the CSV file with image URLs (same file as you validated before):</p>
+    <p class="fs-5 col-md-8">Choose the CSV file to validate:</p>
     <form method="post" action="/bookcovers" enctype="multipart/form-data">
-        <p><input type="file" name="csv_file" required/></p>
+        <p><input type="file" name="csv_file" accept="csv" required/></p>
         <p><input type="submit" value="View book covers" /></p>
     </form>
 

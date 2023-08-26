@@ -32,12 +32,12 @@
     {% endfor %}
 
         <ul class="list-unstyled ps-0">
-          <!--li>
-            <a class="icon-link mb-1" href="{{ url_for('bookcovers') }}?csv_file={{fn}}" >
+          <li>
+            <a class="icon-link mb-1" href="{{ url_for('bookcovers',fn=fn) }}" >
               <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"/></svg>
-              View book covers from this CSV file (***wip, not working yet), reading https://flask.palletsprojects.com/en/2.3.x/patterns/fileuploads/
+              View book covers from this CSV file
             </a>
-          </li-->
+          </li>
           <li>
             <a class="icon-link mb-1" href="{{ url_for('validatecsv') }}" >
               <svg class="bi" width="16" height="16"><use xlink:href="#arrow-right-circle"/></svg>

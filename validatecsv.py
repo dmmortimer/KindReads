@@ -2,6 +2,7 @@ import csv
 from io import StringIO
 from validatetags import validate_before_import
 
+
 def validate_csv(csv_file):
 
     results_lines = []
@@ -66,6 +67,11 @@ def imagesrc_list_from_csv(csv_file):
     fileContent = None
     try:
         fileContent = StringIO(csv_file.read().decode('utf-8'))
+    except AttributeError:
+        # this happens when we're reading a saved temp file that was already decoded
+        # try again without decoding
+        csv_file.seek(0)
+        fileContent = csv_file
     except UnicodeDecodeError as e:
         # try again with latin-1
         print('decode '+csv_file.filename+' as utf-8 gives UnicodeDecodeError '+str(e)+', try again with latin-1')
@@ -76,6 +82,7 @@ def imagesrc_list_from_csv(csv_file):
     for row in csvreader:
         if row[0] == 'Handle':
             # skip header line
+            # todo find column containing image src instead of hard-coding to 24
             continue
         imagesrc_list.append(row[24])
 
