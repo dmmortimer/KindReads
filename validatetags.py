@@ -435,7 +435,7 @@ def validate_tags(product):
 
     # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
     title_words = re.split(r'\W+',title.lower())
-    if 'set' in title_words  or 'collection' in title_words:
+    if 'set' in title_words  or 'collection' in title_words or 'bundle' in title_words:
         if id not in confirmed_sets_or_false_positives and id not in gift_sets:
             errors.append('has a title suggesting a set or collection but is not on list of confirmed sets or false positives')
 
