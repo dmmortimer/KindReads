@@ -121,29 +121,53 @@ tags_in_collections = {
         'Psychological Thriller':'Mystery and Thriller',
         'Thriller':'Mystery and Thriller',
 
-        # todo, change the rules so you can have history+fiction or politics+fiction without having the (non-fiction) politics and history collection tag?
         'History':'Politics and History',
         'Politics':'Politics and History'
 }
 
 language_tags = ['Arabic','French','Inuktitut','Spanish','Portuguese']
 
-known_tags = parent_tags + kids_age_tags + language_tags + [
+# tags used for nonfiction submenus on site - can only be used with nonfiction
+nonfiction_only_tags = [
+        'Autobiography',
+        'Biography',
+        'Cookbook',
+        'History',
+        'Inspiring Bios',
+        'Memoir',
+        'Memoirs and Biographies',
+        'Politics',
+        'Politics and History',
+        'Travel',
+]
+
+# tags used for fiction submenus on site - can only be used with fiction
+fiction_only_tags = [
+        'Fantasy',
+        'Fantasy & Sci-Fi',
+        'Historical Fiction',
+        'Historical fiction',
+        'Mystery',
+        'Mystery and Thriller',
+        'Psychological Thriller',
+        'Romance',
+        'Science Fiction',
+        'Thriller',
+]
+
+known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags + fiction_only_tags + [
         'Academic',
         'Adventure',
         'Animals',
         'Architecture',
         'Art',
         'Astrology',
-        'Autobiography',
-        'Biography',
         'BIPOC',
         'Business',
         'Canadian',
         'Classic',
         'Clearance',
         'Contemporary',
-        'Cookbook',
         'Crime',
         'crime',
         'Culture',
@@ -153,45 +177,30 @@ known_tags = parent_tags + kids_age_tags + language_tags + [
         'Environment',
         'Essays',
         'Family',
-        'Fantasy',
-        'Fantasy & Sci-Fi',
         'Friendship',
         'Gift Card',
         'Graphic Novel',
         'Health',
-        'Historical Fiction',
-        'Historical fiction',
-        'History',
         'Holiday',
         'Horror',
         'Horticulture',
         'Humor',
         'Indigenous',
-        'Inspiring Bios',
         'International',
         'Law',
         'LGBT',
         'Medicine',
-        'Memoir',
-        'Memoirs and Biographies',
         'Mental Health',
         'Music',
-        'Mystery',
-        'Mystery and Thriller',
         'Paranormal',
         'Parenting',
         'Philosophy',
         'Photography',
         'Police',
-        'Politics',
-        'Politics and History',
-        'Psychological Thriller',
         'Psychology',
         'Queer',
         'Religion',
-        'Romance',
         'Science',
-        'Science Fiction',
         'Self Help',
         'Self-Help',
         'Self-help',
@@ -204,8 +213,6 @@ known_tags = parent_tags + kids_age_tags + language_tags + [
         'staff pick',
         'Summer',
         'Technology',
-        'Thriller',
-        'Travel',
         'True Crime',
         'War',
         'Writing'
@@ -412,6 +419,19 @@ def validate_tags(product):
                 if tag in tags_in_collections:
                     if tags_in_collections[tag] not in tags:
                         errors.append('has tag %s but not the collection tag %s' % (tag,tags_in_collections[tag]))
+
+        # Rule: Fiction can't use nonfiction only tags as these are used for nonfiction submenus on site
+        if 'Fiction' in tags:
+            nonfiction_only_tags_present = set(tags).intersection(set(nonfiction_only_tags))
+            if len(nonfiction_only_tags_present) > 0:
+                errors.append('fiction book has nonfiction tags %s' % nonfiction_only_tags_present)
+
+        # Rule: Nonfiction can't use fiction only tags as these are used for fiction submenus on site
+        # todo make this a function is_nonfiction
+        if set(tags).intersection(set(nonfiction_tags)):
+            fiction_only_tags_present = set(tags).intersection(set(fiction_only_tags))
+            if len(fiction_only_tags_present) > 0:
+                errors.append('nonfiction book has fiction tags %s' % fiction_only_tags_present)    
 
     # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
     title_words = re.split(r'\W+',title.lower())
