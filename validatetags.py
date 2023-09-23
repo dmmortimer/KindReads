@@ -35,6 +35,13 @@ pot_pourri = [
     7869301096599   # Pot-Pourri 2022
 ]
 
+# Title words indicating possible multi-book item
+title_words_indicating_multiple_books = [
+    'bundle',
+    'collection',
+    'set'
+]
+
 # Sets/collections that have been checked in Room 149 and we have all the books in the set
 # If we don't have all books, the words set or collection need to be removed from the title
 confirmed_sets_or_false_positives = [
@@ -53,8 +60,8 @@ confirmed_sets_or_false_positives = [
 
 
 # Price guidelines
-min_kids_price = 0.99
-min_adult_price = 3.99
+min_kids_price = 0.99   # there are some $1.49 kids books
+min_adult_price = 3.99  # would like to make this 4.99 but there's a lot of 3.99 books that would fail the check
 max_price = 20
 min_compare_price = 7.99
 # beware, uses product handle (id) as key, not isbn
@@ -436,7 +443,7 @@ def validate_tags(product):
 
     # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
     title_words = re.split(r'\W+',title.lower())
-    if 'set' in title_words  or 'collection' in title_words or 'bundle' in title_words:
+    if set(title_words).intersection(set(title_words_indicating_multiple_books)):
         if id not in confirmed_sets_or_false_positives and id not in gift_sets:
             errors.append('has a title suggesting a set or collection but is not on list of confirmed sets or false positives')
 
