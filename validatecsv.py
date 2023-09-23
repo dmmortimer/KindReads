@@ -32,21 +32,30 @@ def validate_csv(csv_file):
         fileContent = StringIO(csv_file.read().decode('latin-1'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
+
+    # possible improvement, use header row to determine indexes instead of hard-coding them
+    isbn_idx = 0    # Handle
+    title_idx = 1   # Title
+    author_idx = 3  # Vendor
+    tags_idx = 5    # Tags
+    price_idx = 19  # Variant Price
+    compareprice_idx = 20   # Variant Compare At Price
+
     for row in csvreader:
-        if row[0] == 'Handle':
+        if row[isbn_idx] == 'Handle':
             # skip header line
             continue
         n+=1
-        isbn = row[0]
-        title = row[1]
-        author = row[3]
-        tags = row[5]
+        isbn = row[isbn_idx]
+        title = row[title_idx]
+        author = row[author_idx]
+        tags = row[tags_idx]
         price = 0
-        if row[19] !='':
-            price = float(row[19].lstrip('$'))
+        if row[price_idx] !='':
+            price = float(row[price_idx].lstrip('$'))
         compareprice = 0
-        if row[20] !='':
-            compareprice = float(row[20].lstrip('$'))
+        if row[compareprice_idx] !='':
+            compareprice = float(row[compareprice_idx].lstrip('$'))
         errors = validate_before_import(tags,price,compareprice,title,author,isbn)
         if len(errors)>0:
             num_with_errors += 1
