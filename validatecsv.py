@@ -79,12 +79,17 @@ def imagesrc_list_from_csv(csv_file):
         fileContent = StringIO(csv_file.read().decode('latin-1'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
+    imagesrc_idx = 24   # default, unlikely to change? future-proof just in case
     for row in csvreader:
         if row[0] == 'Handle':
-            # skip header line
-            # todo find column containing image src instead of hard-coding to 24
-            continue
-        imagesrc_list.append(row[24])
+            # header row, find column that contains image src url
+            try:
+                imagesrc_idx = row.index('Image Src')
+            except ValueError:
+                # not there, that's strange, ignore and use the default
+                continue
+        else:
+            imagesrc_list.append(row[imagesrc_idx])
 
     return imagesrc_list
 
