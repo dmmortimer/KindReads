@@ -29,7 +29,7 @@ getorders.py
 - expensive to do all orders, use carefully
 
 fopla_csv_generator.rb
- - Ruby script that reads ISBNs from a CSV, pulls book information via API and outputs a CSV for uploading to Shopify
+ - Ruby script that reads ISBNs from file scans.csv, pulls book information via API and outputs a CSV for uploading to Shopify
  - Outputs up to three CSVs:
    - Completed book profiles (meaning all of the attributes have a value)
    - Incomplete (meaning the book was found in the db, but not all attributes were retrievable)
@@ -39,9 +39,9 @@ fopla_csv_generator.rb
 
  ## CSV validation web app
  A simple web app is deployed at https://dmortimer.pythonanywhere.com so volunteers working on scan uploads
- can validate the product CSV file before it is imported into Shopify. (This web app replaces the previous 
- validate-import-csv.py script which required a local installation of Python to run.)
+ can validate the product CSV file including book cover images before it is imported into Shopify.
 
  flask_app.py - web app using Flask framework
  validatecsv.py - processing code for the web app, calling functions from validatetags.py to do the real work
+ static/images folder - images for the web app
  templates folder - html pages for the web app
