@@ -11,12 +11,6 @@ skip_sold_out_products = True
 write_covers_html = False
 outfn = 'covers.html'
 
-# get first 250 (alphabetical) products from admin api like this on Windows
-# curl -H "X-Shopify-Access-Token: FILLMEIN" "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&fields=id,tags,title,published_at,variants" > products-250.json
-# or this on Linux
-# curl -H 'X-Shopify-Access-Token: FILLMEIN' https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=5 > products-5.json
-# to get all products, use pagination, see getproducts.py. Writes to products-all.json
-
 # products that are not books, can be useful to skip these for reporting
 # todo could improve this by using product category or type, or even tags, and not have hard-coded list of product ids
 gift_sets = [
@@ -92,6 +86,7 @@ nonfiction_tags = [
         'Non-Fiction'
 ]
 parent_tags = nonfiction_tags + [
+        'Classic',      # Declared a parent tag so we can have promotions without accidentally discounting the Folio Society books
         'Fiction',
         'Kids',
         'Poetry'
@@ -172,7 +167,6 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'BIPOC',
         'Business',
         'Canadian',
-        'Classic',
         'Clearance',
         'Contemporary',
         'Crime',
@@ -225,6 +219,9 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Western',
         'Writing'
 ]
+
+# useful to see list of tags that can be added without fear of interfering with collections
+#sorted(set(known_tags) - set(fiction_only_tags) - set(nonfiction_only_tags) - set(kids_age_tags) - set(parent_tags))
 
 # list not used, this is just for reference and matches shelves as at April 2023
 shelves = [
@@ -421,6 +418,7 @@ def validate_tags(product):
 
         # Rule: for the combo collections, need consistent tags
         # Combo collections are defined to not show sold-out products and can only look at one tag to do this
+        # Note - now that we archive sold-out products, we don't have to do the collections this way - can use 'or' instead of 'and' - todo
         # Exception: Kids books as they don't appear in Fiction collections anyway
         if 'Kids' not in tags:
             for tag in tags:
@@ -440,6 +438,15 @@ def validate_tags(product):
             fiction_only_tags_present = set(tags).intersection(set(fiction_only_tags))
             if len(fiction_only_tags_present) > 0:
                 errors.append('nonfiction book has fiction tags %s' % fiction_only_tags_present)    
+
+        # Rule: Classic can't use fiction or nonfiction only tags as these are used for submenus on site
+        if 'Classic' in tags:
+            collection_tags_present = set(tags).intersection(set(fiction_only_tags)) | set(tags).intersection(set(nonfiction_only_tags))
+            if len(collection_tags_present) > 0:
+               errors.append('classic book has collection tags %s' % collection_tags_present)    
+
+        # todo refactor? generic rule: parent tag can't have tags that identify other parents' collections
+        # todo rethink how collection tags work now that we don't need to have 0-qty condition for collections (we archive sold-out now)
 
     # Titles that indicate sets or collections are checked in Room 149 to make sure we have the entire set not just one volume
     title_words = re.split(r'\W+',title.lower())
