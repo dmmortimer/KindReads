@@ -149,6 +149,7 @@ fiction_only_tags = [
         'Fantasy & Sci-Fi',
         'Historical Fiction',
         'Historical fiction',
+        'Literary Fiction',
         'Mystery',
         'Mystery and Thriller',
         'Psychological Thriller',
