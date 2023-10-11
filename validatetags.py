@@ -49,7 +49,11 @@ confirmed_sets_or_false_positives = [
     8035473883287,  # Venom: The Complete Collection
     8037883936919,  # Disney's Storybook Collection
     8037881577623,  # Playhouse Disney Storybook (Storybook Collection)
-    7462553288855   # Go Set a Watchman: A Novel
+    7462553288855,  # Go Set a Watchman: A Novel
+    8077997703319,  # Harry Potter Boxed Set (1-4)
+    8077994524823,  # My Little Pony: Friends Forever Volumes 1-9 Bundle
+    8077996654743,  # My Little Pony: Friendship is Magic Volumes 1-18 Bundle
+    8078000324759   # Yotsuba&!, Volumes 1-15 Bundle
 ]
 
 
@@ -70,7 +74,12 @@ price_exceptions = {
     '8010714841239': 99.99,     # Sex by Madonna
     '8035475194007': 40.99,     # The Art of Maurice Sendak
     '8050688360599': 29.99,     # The Devil's Playground
-    '8050688393367': 29.99      # Love and Other Stories
+    '8050688393367': 29.99,     # Love and Other Stories
+    '8077997703319': 24.99,     # Harry Potter Boxed Set (1-4)
+    '8077997736087': 24.99,     # The Golden Compass / The Subtle Knife / The Amber Spyglass (His Dark Materials)
+    '8077994524823': 39.99,     # My Little Pony: Friends Forever Volumes 1-9 Bundle
+    '8077996654743': 59.99,     # My Little Pony: Friendship is Magic Volumes 1-18 Bundle
+    '8078000324759': 49.99      # Yotsuba&!, Volumes 1-15 Bundle
 }
 
 def is_gift_set(id):
@@ -487,7 +496,7 @@ def validate_tags(product):
         if id not in gift_sets:
             # Classic can have any price
             if 'Classic' not in tags:
-                errors.append('has price %s above maximum price %s' % (price,max_price))
+                errors.append('has price %s above maximum price %s and is not on list of exceptions' % (price,max_price))
 
     # All prices end in $X.99
     cents = round(price - math.floor(price),2)
