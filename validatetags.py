@@ -63,7 +63,7 @@ min_adult_price = 3.99  # would like to make this 4.99 but there's a lot of 3.99
 max_price = 20
 min_compare_price = 7.99
 # beware, uses product handle (id) as key, not isbn
-# all Classic books bypass the max price check, no need to list as exceptions
+# all books tagged Classic or Folio Society bypass the max price check, no need to list as exceptions
 price_exceptions = {
     '7949689258135': 99.99,     # Angel Illyria Haunted
     '7949689520279': 69.00,     # Spike: Into the Light
@@ -73,8 +73,8 @@ price_exceptions = {
     '8008024883351': 44.99,     # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
     '8010714841239': 99.99,     # Sex by Madonna
     '8035475194007': 40.99,     # The Art of Maurice Sendak
-    '8050688360599': 29.99,     # The Devil's Playground
     '8050688393367': 29.99,     # Love and Other Stories
+    '8062746689687': 59.99,     # Le Grand Atlas de la Lune
     '8077997703319': 24.99,     # Harry Potter Boxed Set (1-4)
     '8077997736087': 24.99,     # The Golden Compass / The Subtle Knife / The Amber Spyglass (His Dark Materials)
     '8077994524823': 39.99,     # My Little Pony: Friends Forever Volumes 1-9 Bundle
@@ -95,8 +95,8 @@ nonfiction_tags = [
         'Non-Fiction'
 ]
 parent_tags = nonfiction_tags + [
-        'Classic',      # Declared a parent tag so we can have promotions without accidentally discounting the Folio Society books
         'Fiction',
+        'Folio Society',      # Declared a parent tag so we can have promotions without accidentally discounting the Folio Society books
         'Kids',
         'Poetry'
 ]
@@ -147,6 +147,7 @@ nonfiction_only_tags = [
         'Inspiring Bios',
         'Memoir',
         'Memoirs and Biographies',
+        'Photography',
         'Politics',
         'Politics and History',
         'Travel',
@@ -156,6 +157,7 @@ nonfiction_only_tags = [
 fiction_only_tags = [
         'Fantasy',
         'Fantasy & Sci-Fi',
+        'Graphic Novels',
         'Historical Fiction',
         'Historical fiction',
         'Literary Fiction',
@@ -178,6 +180,8 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'BIPOC',
         'Business',
         'Canadian',
+        'Christmas',
+        'Classic',
         'Clearance',
         'Contemporary',
         'Crime',
@@ -189,7 +193,6 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Environment',
         'Essays',
         'Family',
-        'Folio Society',
         'Friendship',
         'Gift Card',
         'Graphic Novel',
@@ -273,9 +276,7 @@ def get_shelf(tags):
 
     shelf = 'Unknown'
     
-    if 'Classic' in tags:
-        # Not always correct, some books tagged Classic are in regular Fiction/Nonfiction sections
-        # Perhaps we need a specific Folio Society tag
+    if 'Folio Society' in tags:
         shelf = 'Folio Society/Vintage'
         return shelf
 
@@ -451,11 +452,12 @@ def validate_tags(product):
             if len(fiction_only_tags_present) > 0:
                 errors.append('nonfiction book has fiction tags %s' % fiction_only_tags_present)    
 
-        # Rule: Classic can't use fiction or nonfiction only tags as these are used for submenus on site
-        if 'Classic' in tags:
+        # Rule: Folio Society can't use fiction or nonfiction only tags as these are used for submenus on site
+        # Prevents FS books showing up in other collections that we might offer discounts on
+        if 'Folio Society' in tags:
             collection_tags_present = set(tags).intersection(set(fiction_only_tags)) | set(tags).intersection(set(nonfiction_only_tags))
             if len(collection_tags_present) > 0:
-               errors.append('classic book has collection tags %s' % collection_tags_present)    
+               errors.append('Folio Society book has collection tags %s' % collection_tags_present)    
 
         # todo refactor? generic rule: parent tag can't have tags that identify other parents' collections
         # todo rethink how collection tags work now that we don't need to have 0-qty condition for collections (we archive sold-out now)
@@ -496,8 +498,8 @@ def validate_tags(product):
     if price > max_price:
         # Gift sets can be more expensive, don't check them
         if id not in gift_sets:
-            # Classic can have any price
-            if 'Classic' not in tags:
+            # Classic and Folio Society can have any price
+            if 'Folio Society' not in tags and 'Classic' not in tags:
                 errors.append('has price %s above maximum price %s and is not on list of exceptions' % (price,max_price))
 
     # All prices end in $X.99
