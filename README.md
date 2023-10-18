@@ -15,7 +15,9 @@ API Credentials > Admin API access token (deliberately not committed to GitHub)
 
 ## Scripts overview
 getproducts.py
-- downloads all products into a combined products.json file called products-all.json
+- by default, downloads all active products
+- if products.txt is present, downloads products by ISBN listed one per line in products.txt
+- outputs a file called products-all.json for use with validatetags or listproducts
 
 validatetags.py
 - has functions to validate tags for consistency, and to derive expected Room 149 shelf from tags
