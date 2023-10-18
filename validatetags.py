@@ -53,7 +53,8 @@ confirmed_sets_or_false_positives = [
     8077997703319,  # Harry Potter Boxed Set (1-4)
     8077994524823,  # My Little Pony: Friends Forever Volumes 1-9 Bundle
     8077996654743,  # My Little Pony: Friendship is Magic Volumes 1-18 Bundle
-    8078000324759   # Yotsuba&!, Volumes 1-15 Bundle
+    8078000324759,  # Yotsuba&!, Volumes 1-15 Bundle
+    8082338578583   # The Hobbit & The Lord of the Rings Boxed Set
 ]
 
 
@@ -67,7 +68,7 @@ min_compare_price = 7.99
 price_exceptions = {
     '7949689258135': 99.99,     # Angel Illyria Haunted
     '7949689520279': 69.00,     # Spike: Into the Light
-    '7949689979031': 59.99,     # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
+    '8083359531159': 59.99,     # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
     '8008024850583': 39.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
     '8008025145495': 49.99,     # Angel and Faith: Season Ten Volume 3 - United
     '8008024883351': 44.99,     # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
@@ -196,6 +197,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Friendship',
         'Gift Card',
         'Graphic Novel',
+        'Hanukkah',
         'Health',
         'Holiday',
         'Horror',
@@ -287,7 +289,7 @@ def get_shelf(tags):
         else:
             shelf = 'Fiction'
     
-    # Graphic novels
+    # Graphic novels, overrides Fiction
     if 'Graphic Novel' in tags:
         if 'French' in tags:
             shelf = 'Bande Dessinée'
@@ -315,8 +317,8 @@ def get_shelf(tags):
         else:
             shelf = 'Nonfiction'
 
-    # Kids
-    if 'Kids' in tags:
+    # Kids except (all-ages) Graphic Novels
+    if 'Kids' in tags and shelf != 'Graphic Novels':
         if 'French' in tags:
             if set(tags).intersection(set(kids_board_tags)):
                 shelf = 'French Kids Board'

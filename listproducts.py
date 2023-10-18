@@ -67,7 +67,7 @@ def log_variant(product,variant,out):
     author_lastname = lastname(author)
     tags = product['tags']
     published_at = product['published_at']
-    published_at_date = 'N/A'   # happens if product is in draft status
+    published_at_date = 'N/A'   # happens if product is in draft status or not published because avail only in bundle
     if published_at:
         published_at_date = published_at[0:len('yyyy-mm-dd')]
     qty = int(variant['inventory_quantity'])
