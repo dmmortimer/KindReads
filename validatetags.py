@@ -54,7 +54,8 @@ confirmed_sets_or_false_positives = [
     8077994524823,  # My Little Pony: Friends Forever Volumes 1-9 Bundle
     8077996654743,  # My Little Pony: Friendship is Magic Volumes 1-18 Bundle
     8078000324759,  # Yotsuba&!, Volumes 1-15 Bundle
-    8082338578583   # The Hobbit & The Lord of the Rings Boxed Set
+    8082338578583,  # The Hobbit & The Lord of the Rings Boxed Set
+    8091756396695   # The Wrinkle in Time Quintet Boxed Set
 ]
 
 
