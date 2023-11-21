@@ -55,7 +55,8 @@ confirmed_sets_or_false_positives = [
     8077996654743,  # My Little Pony: Friendship is Magic Volumes 1-18 Bundle
     8078000324759,  # Yotsuba&!, Volumes 1-15 Bundle
     8082338578583,  # The Hobbit & The Lord of the Rings Boxed Set
-    8091756396695   # The Wrinkle in Time Quintet Boxed Set
+    8091756396695,  # The Wrinkle in Time Quintet Boxed Set
+    8104458158231   # The Clan MacGregor Series, Books 1-5 Bundle
 ]
 
 
@@ -81,7 +82,10 @@ price_exceptions = {
     '8077997736087': 24.99,     # The Golden Compass / The Subtle Knife / The Amber Spyglass (His Dark Materials)
     '8077994524823': 39.99,     # My Little Pony: Friends Forever Volumes 1-9 Bundle
     '8077996654743': 59.99,     # My Little Pony: Friendship is Magic Volumes 1-18 Bundle
-    '8078000324759': 49.99      # Yotsuba&!, Volumes 1-15 Bundle
+    '8078000324759': 49.99,     # Yotsuba&!, Volumes 1-15 Bundle
+    '8102744719511': 24.99,     # The New Sotheby's Wine Encyclopedia
+    '8107182751895': 24.99,     # Batman/Superman Vol. 2: World's Deadliest
+    '8107182522519': 49.99      # Superman Vs. Muhammad Ali, Deluxe Hardcover Edition
 }
 
 def is_gift_set(id):
