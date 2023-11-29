@@ -44,6 +44,9 @@ fopla_csv_generator.rb
  can validate the product CSV file including book cover images before it is imported into Shopify.
 
  flask_app.py - web app using Flask framework
+ 
  validatecsv.py - processing code for the web app, calling functions from validatetags.py to do the real work
+ 
  static/images folder - images for the web app
+ 
  templates folder - html pages for the web app
