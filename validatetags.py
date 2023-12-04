@@ -57,7 +57,8 @@ confirmed_sets_or_false_positives = [
     8082338578583,  # The Hobbit & The Lord of the Rings Boxed Set
     8091756396695,  # The Wrinkle in Time Quintet Boxed Set
     8104458158231,  # The Clan MacGregor Series, Books 1-5 Bundle
-    8136578203799   # McGuffey's Eclectic Readers 7-Volume Boxed Set
+    8136578203799,  # McGuffey's Eclectic Readers 7-Volume Boxed Set
+    9781681775159   # The Riviera Set: Glitz, Glamour, and the Hidden World of High Society
 ]
 
 
