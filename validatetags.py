@@ -24,7 +24,20 @@ gift_sets = [
 ]
 
 pot_pourri = [
+    9780978437206,  # Pot-Pourri 2007
+    9780978437213,  # Pot-Pourri 2008
+    9780978437220,  # Pot-Pourri 2009
+    9780978437237,  # Pot-Pourri 2010
+    9780978437244,  # Pot-Pourri 2011
+    9780978437251,  # Pot-Pourri 2012
+    9780978437268,  # Pot-Pourri 2013
+    9780978437275,  # Pot-Pourri 2014
     7988045938839,  # Pot-Pourri 2015
+    9780978437299,  # Pot-Pourri 2016
+    9871775073000,  # Pot-Pourri 2017
+    9781775073017,  # Pot-Pourri 2018
+    9780978437206,  # Pot-Pourri 2019
+    9781775073031,  # Pot-Pourri 2020
     7326988370071,  # Pot-Pourri 2021
     7869301096599   # Pot-Pourri 2022
 ]
