@@ -191,7 +191,14 @@ fiction_only_tags = [
         'Thriller',
 ]
 
-known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags + fiction_only_tags + [
+holiday_sub_tags = [
+	'Christmas',
+	'Hanukkah'
+]
+
+holiday_tags = holiday_sub_tags + ['Holiday']
+
+known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags + fiction_only_tags + holiday_tags + [
         'Academic',
         'Adventure',
         'Animals',
@@ -202,7 +209,6 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'BIPOC',
         'Business',
         'Canadian',
-        'Christmas',
         'Classic',
         'Clearance',
         'Contemporary',
@@ -218,9 +224,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Friendship',
         'Gift Card',
         'Graphic Novel',
-        'Hanukkah',
         'Health',
-        'Holiday',
         'Horror',
         'Horticulture',
         'Humor',
@@ -554,6 +558,11 @@ def validate_tags(product):
     # Check for corrupt ISBN
     if 'E' in isbn:
         errors.append('has corrupt ISBN %s' % isbn)
+
+	# Holiday tags
+    holiday_sub_tags_present = set(tags).intersection(set(holiday_sub_tags))
+    if len(holiday_sub_tags_present) > 0 and 'Holiday' not in tags:
+    	errors.append('has holiday sub-tags %s but is missing Holiday tag' % (holiday_sub_tags_present))
 
     return errors
 
