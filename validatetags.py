@@ -23,21 +23,22 @@ gift_sets = [
     7240056537239   # Kids Advent Calendar Gift Set (12 or 24 Books)
 ]
 
+# Product IDs not ISBNs. todo change to use ISBNs, easier for upload validation
 pot_pourri = [
-    9780978437206,  # Pot-Pourri 2007
-    9780978437213,  # Pot-Pourri 2008
-    9780978437220,  # Pot-Pourri 2009
-    9780978437237,  # Pot-Pourri 2010
-    9780978437244,  # Pot-Pourri 2011
-    9780978437251,  # Pot-Pourri 2012
-    9780978437268,  # Pot-Pourri 2013
-    9780978437275,  # Pot-Pourri 2014
+    8146421973143,  # Pot-Pourri 2007
+    8146422005911,  # Pot-Pourri 2008
+    8146422038679,  # Pot-Pourri 2009
+    8146422071447,  # Pot-Pourri 2010
+    8146422136983,  # Pot-Pourri 2011
+    8146422169751,  # Pot-Pourri 2012
+    8146422202519,  # Pot-Pourri 2013
+    8146422235287,  # Pot-Pourri 2014
     7988045938839,  # Pot-Pourri 2015
-    9780978437299,  # Pot-Pourri 2016
-    9871775073000,  # Pot-Pourri 2017
-    9781775073017,  # Pot-Pourri 2018
-    9780978437206,  # Pot-Pourri 2019
-    9781775073031,  # Pot-Pourri 2020
+    8146422300823,  # Pot-Pourri 2016
+    8146422333591,  # Pot-Pourri 2017
+    8146422399127,  # Pot-Pourri 2018
+    8146708103319,  # Pot-Pourri 2019
+    8146422431895,  # Pot-Pourri 2020
     7326988370071,  # Pot-Pourri 2021
     7869301096599   # Pot-Pourri 2022
 ]
