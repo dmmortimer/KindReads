@@ -72,7 +72,7 @@ confirmed_sets_or_false_positives = [
     8091756396695,  # The Wrinkle in Time Quintet Boxed Set
     8104458158231,  # The Clan MacGregor Series, Books 1-5 Bundle
     8136578203799,  # McGuffey's Eclectic Readers 7-Volume Boxed Set
-    9781681775159   # The Riviera Set: Glitz, Glamour, and the Hidden World of High Society
+    8187013922967   # The Expanse Boxed Set
 ]
 
 
@@ -261,6 +261,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'True Crime',
         'War',
         'Western',
+        'Winter Sale',
         'Writing'
 ]
 
