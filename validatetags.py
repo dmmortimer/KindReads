@@ -212,6 +212,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'BIPOC',
         'Business',
         'Canadian',
+        'Chinese',
         'Classic',
         'Clearance',
         'Contemporary',
