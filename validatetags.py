@@ -72,6 +72,7 @@ confirmed_sets_or_false_positives = [
     8091756396695,  # The Wrinkle in Time Quintet Boxed Set
     8104458158231,  # The Clan MacGregor Series, Books 1-5 Bundle
     8136578203799,  # McGuffey's Eclectic Readers 7-Volume Boxed Set
+    8137034170519,  # The Riviera Set: Glitz, Glamour, and the Hidden World of High Society
     8187013922967,  # The Expanse Boxed Set
     8187178713239,  # Alice Munro Collection: 5-Volume Boxset
     8192143884439   # Disney Frozen Storybook Collection
