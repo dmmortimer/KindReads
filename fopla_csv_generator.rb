@@ -87,7 +87,7 @@ class Fopla
 			else
         {
           isbn: isbn,
-          title: '*Could not find in database',
+          title: '*Could not find in database, error '+response.code,
           authors: '',
           publish_date: '',
           publisher: '',
@@ -108,6 +108,7 @@ class Fopla
 				publisher: profile['publisher'] || 'N/A',
 				image: profile['image'] || 'N/A',
 				synopsys: profile['synopsys'] || profile['overview'] || double_check_isbn_13(profile),
+				weight: format_weight(profile),
 			}
 
 
@@ -120,6 +121,22 @@ class Fopla
 
       formatted_book_profile
 		end
+
+    def format_weight(profile)
+      if profile['dimensions_structured'] && profile['dimensions_structured']['weight']
+        if profile['dimensions_structured']['weight']['unit'] == 'pounds'
+          weight_pounds = profile['dimensions_structured']['weight']['value']
+          weight_grams = weight_pounds*454
+          weight_grams_rounded = weight_grams.round()
+          weight_grams_rounded
+        else
+          puts "Unrecognized weight units #{profile['dimensions_structured']['weight']['unit']}, weight set to 0"
+          0
+        end
+      else
+        0
+      end
+    end
 
     def format_publish_date(profile)
       if profile['publish_date']
@@ -201,7 +218,7 @@ class Fopla
             '',
             '',
             profile[:isbn],
-            '0',
+            profile[:weight],
             'shopify',
             '1',
             'deny',
