@@ -75,7 +75,9 @@ confirmed_sets_or_false_positives = [
     8137034170519,  # The Riviera Set: Glitz, Glamour, and the Hidden World of High Society
     8187013922967,  # The Expanse Boxed Set
     8187178713239,  # Alice Munro Collection: 5-Volume Boxset
-    8192143884439   # Disney Frozen Storybook Collection
+    8192143884439,  # Disney Frozen Storybook Collection
+    8217014337687,  # Fearless Fred's Big Adventures 4-Volume Bundle
+    8217015419031   # Les P'tites Poules Volumes 1-6 Bundle (Chinese)
 ]
 
 
@@ -182,7 +184,7 @@ nonfiction_only_tags = [
 fiction_only_tags = [
         'Fantasy',
         'Fantasy & Sci-Fi',
-        'Graphic Novels',
+        'Graphic Novel',
         'Historical Fiction',
         'Historical fiction',
         'Literary Fiction',
@@ -201,7 +203,12 @@ holiday_sub_tags = [
 
 holiday_tags = holiday_sub_tags + ['Holiday']
 
-known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags + fiction_only_tags + holiday_tags + [
+prize_tags = [
+	'Giller Prize Finalist',
+	'Giller Prize Winner'
+]
+
+known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags + fiction_only_tags + holiday_tags + prize_tags + [
         'Academic',
         'Adventure',
         'Animals',
@@ -228,7 +235,6 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Family',
         'Friendship',
         'Gift Card',
-        'Graphic Novel',
         'Health',
         'Horror',
         'Horticulture',
@@ -478,6 +484,11 @@ def validate_tags(product):
             nonfiction_only_tags_present = set(tags).intersection(set(nonfiction_only_tags))
             if len(nonfiction_only_tags_present) > 0:
                 errors.append('fiction book has nonfiction tags %s' % nonfiction_only_tags_present)
+            # Rule: Fiction that is a prize winner is (probably) literary fiction
+            prize_tags_present = set(tags).intersection(set(prize_tags))
+            if len(prize_tags_present) > 0:
+                if not 'Literary Fiction' in tags:
+                    errors.append('fiction book has literary prize tags %s but not Literary Fiction' % prize_tags_present)
 
         # Rule: Nonfiction can't use fiction only tags as these are used for fiction submenus on site
         # todo make this a function is_nonfiction
