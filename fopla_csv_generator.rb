@@ -239,7 +239,7 @@ class Fopla
 
 		def generate_html_body(profile)
       formatted = profile[:synopsys].downcase.split(/(?<=[?.!])\s*/).map(&:capitalize).join(" ")
-			"#{formatted}<br><br><strong>Publisher: </strong>#{profile[:publisher]}"
+			"#{formatted}<strong>Publisher: </strong>#{profile[:publisher]}"
 		end
 	end
 end
