@@ -77,6 +77,10 @@ def log_variant(product,variant,out):
         compareprice=''
     else:
         compareprice='$'+compareprice
+
+    weight = variant['weight']*1000
+    assert(variant['weight_unit'] == 'kg')
+
     shelf = 'Unknown'
     if is_pot_pourri(id):
         shelf = 'Materials Management'
@@ -90,7 +94,7 @@ def log_variant(product,variant,out):
         return 0
 
     s = str(id)+','+str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','\
-        +published_at_date+','+str(qty)+','+price+','+compareprice+'\n'
+        +published_at_date+','+str(qty)+','+price+','+compareprice+','+str(weight)+'\n'
     out.write(s)
     return 1
 
@@ -114,7 +118,7 @@ with open(fn,encoding="utf-8") as f:
 
     with open(outfile,"w",encoding="utf-8") as out:
         n = 0
-        out.write('id,isbn,title,author,last name,tags,shelf,uploaded,qty,price,compareprice'+'\n')
+        out.write('id,isbn,title,author,last name,tags,shelf,uploaded,qty,price,compareprice,weight in g'+'\n')
         for product in products:
             n+=log_product(product,out)
         print('Wrote',n,'products to',outfile)
