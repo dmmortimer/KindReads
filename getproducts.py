@@ -10,7 +10,6 @@ input_fn = 'products.txt'    # optional, if this file exists then only these pro
 
 # don't commit secret to GitHub
 ACCESS_TOKEN = 'FILLMEIN'
-ACCESS_TOKEN = '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'
 
 # returns all products
 def get_all():
