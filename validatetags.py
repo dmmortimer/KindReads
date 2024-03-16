@@ -117,8 +117,6 @@ def is_pot_pourri(id):
 
 nonfiction_tags = [
         'Non-fiction',
-        'Non Fiction',
-        'Non fiction',
         'Non-Fiction'
 ]
 parent_tags = nonfiction_tags + [
