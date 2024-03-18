@@ -14,7 +14,7 @@ ACCESS_TOKEN = 'FILLMEIN'
 # returns all products
 def get_all():
 
-    request = "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?limit=250&status=active&fields=id,tags,title,published_at,vendor,variants,images"
+    request = "https://friends-bookshop.myshopify.com/admin/api/2024-01/products.json?limit=250&status=active&fields=id,tags,title,published_at,vendor,variants,images,metafields"
     headers = {'X-Shopify-Access-Token': ACCESS_TOKEN}
 
     all_products = []
@@ -35,7 +35,7 @@ def get_all():
 # fetches listed products
 def fetch_ids(ids):
 
-    request_prefix = "https://friends-bookshop.myshopify.com/admin/api/2023-04/products.json?fields=id,tags,title,published_at,vendor,variants,images"
+    request_prefix = "https://friends-bookshop.myshopify.com/admin/api/2024-01/products.json?fields=id,tags,title,published_at,vendor,variants,images"
     headers = {'X-Shopify-Access-Token': ACCESS_TOKEN}
 
     more_products = []
