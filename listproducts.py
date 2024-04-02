@@ -81,20 +81,29 @@ def log_variant(product,variant,out):
     weight = variant['weight']*1000
     assert(variant['weight_unit'] == 'kg')
 
+    # metafields is added by getlibdiscard.py (expensive, therefore optional)
+    lib_discard = 'Unknown'
+    if 'metafields' in product:
+        lib_discard = False
+        for mf in product['metafields']:
+            if mf['namespace'] == 'custom' and mf['key'] == 'library_discard':
+                lib_discard = str(mf['value'])
+
     shelf = 'Unknown'
     if is_pot_pourri(id):
         shelf = 'Materials Management'
     else:
         shelf = get_shelf(tags)
 
-    if qty==0 and skip_sold_out_products:
-        return 0
-
     if is_gift_set(id) and skip_gift_sets:
         return 0
 
+    if qty==0 and skip_sold_out_products:
+        print('skipping sold-out',title)
+        return 0
+
     s = str(id)+','+str(isbn)+',"'+title+'","'+author+'",'+author_lastname+',"'+tags+'",'+shelf+','\
-        +published_at_date+','+str(qty)+','+price+','+compareprice+','+str(weight)+'\n'
+        +published_at_date+','+str(qty)+','+price+','+compareprice+','+str(weight)+','+str(lib_discard)+'\n'
     out.write(s)
     return 1
 
@@ -110,15 +119,11 @@ with open(fn,encoding="utf-8") as f:
     j = json.loads(f.read())
     products = j['products']
     print('Reading from',fn)
-    print('File contains',len(products),'products')
-    if skip_sold_out_products:
-        print('Skipping sold-out products')
-    else:
-        print('Including sold-out products')
 
     with open(outfile,"w",encoding="utf-8") as out:
         n = 0
-        out.write('id,isbn,title,author,last name,tags,shelf,uploaded,qty,price,compareprice,weight in g'+'\n')
+        #out.write('id,isbn,title,author,last name,tags,shelf,uploaded,qty,price,compareprice,weight in g'+'\n')
+        out.write('id,isbn,title,author,last name,tags,shelf,uploaded,qty,price,compareprice,weight in g,library discard'+'\n')
         for product in products:
             n+=log_product(product,out)
         print('Wrote',n,'products to',outfile)

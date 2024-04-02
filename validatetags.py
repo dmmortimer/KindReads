@@ -20,6 +20,8 @@ gift_sets = [
     7286938042519,  # Gratitude Gift Card
     7286983229591,  # Happy Holidays Gift Card
     7281284055191,  # Secret Santa Gift Card
+    7286949773463,  # Birthday Gift Card
+    7286903472279,  # Hanukkah Gift Card
     7240056537239   # Kids Advent Calendar Gift Set (12 or 24 Books)
 ]
 
@@ -104,7 +106,7 @@ price_exceptions = {
     '8077994524823': 39.99,     # My Little Pony: Friends Forever Volumes 1-9 Bundle
     '8077996654743': 59.99,     # My Little Pony: Friendship is Magic Volumes 1-18 Bundle
     '8078000324759': 49.99,     # Yotsuba&!, Volumes 1-15 Bundle
-    '8102744719511': 24.99,     # The New Sotheby's Wine Encyclopedia
+    '8102744719511': 19.99,     # The New Sotheby's Wine Encyclopedia
     '8107182751895': 24.99,     # Batman/Superman Vol. 2: World's Deadliest
     '8107182522519': 49.99      # Superman Vs. Muhammad Ali, Deluxe Hardcover Edition
 }
@@ -576,10 +578,10 @@ def validate_tags(product):
     if 'E' in isbn:
         errors.append('has corrupt ISBN %s' % isbn)
 
-	# Holiday tags
+    # Holiday tags
     holiday_sub_tags_present = set(tags).intersection(set(holiday_sub_tags))
     if len(holiday_sub_tags_present) > 0 and 'Holiday' not in tags:
-    	errors.append('has holiday sub-tags %s but is missing Holiday tag' % (holiday_sub_tags_present))
+        errors.append('has holiday sub-tags %s but is missing Holiday tag' % (holiday_sub_tags_present))
 
     return errors
 

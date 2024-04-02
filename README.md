@@ -17,7 +17,12 @@ API Credentials > Admin API access token (deliberately not committed to GitHub)
 getproducts.py
 - by default, downloads all active products
 - if products.txt is present, downloads products by ISBN listed one per line in products.txt
-- outputs a file called products-all.json for use with validatetags or listproducts
+- outputs a file called products-all.json for use with validatetags or listproducts or getlibdiscard
+
+getlibdiscard.py
+- reads products-all.json and fetches library_discard metafield for each product
+- expensive, takes over 15 minutes to run, only use if library_discard value is needed in a report
+- writes updated products-all.json for use with listproducts
 
 validatetags.py
 - has functions to validate tags for consistency, and to derive expected Room 149 shelf from tags
