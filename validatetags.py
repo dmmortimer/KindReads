@@ -215,6 +215,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Archaeology',
         'Architecture',
         'Art',
+        'Asian Heritage',
         'Astrology',
         'BIPOC',
         'Business',
