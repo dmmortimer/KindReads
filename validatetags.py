@@ -263,6 +263,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Self-help',
         'Short Stories',
         'Sociology',
+        'Spirituality',
         'Sports',
         'Spy',
         'Staff Pick',
