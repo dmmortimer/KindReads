@@ -42,7 +42,8 @@ pot_pourri = [
     8146708103319,  # Pot-Pourri 2019
     8146422431895,  # Pot-Pourri 2020
     7326988370071,  # Pot-Pourri 2021
-    7869301096599   # Pot-Pourri 2022
+    7869301096599,  # Pot-Pourri 2022
+    8335634563223   # Pot-Pourri 2023
 ]
 
 # Title words indicating possible multi-book item
@@ -249,6 +250,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Medicine',
         'Mental Health',
         'Music',
+        'Nature',
         'Paranormal',
         'Parenting',
         'Philosophy',
