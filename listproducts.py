@@ -78,8 +78,16 @@ def log_variant(product,variant,out):
     else:
         compareprice='$'+compareprice
 
-    weight = variant['weight']*1000
-    assert(variant['weight_unit'] == 'kg')
+    # show weight in grams
+    weight = variant['weight']
+    match variant['weight_unit']:
+        case 'g':
+            pass
+        case 'kg':
+            weight = variant['weight']*1000
+        case _:
+            print('Unsupported weight unit',variant['weight_unit'],'for id',id, ', expecting g or kg, aborting')
+            assert(False)
 
     # metafields is added by getlibdiscard.py (expensive, therefore optional)
     lib_discard = 'Unknown'
