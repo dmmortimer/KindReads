@@ -80,7 +80,9 @@ confirmed_sets_or_false_positives = [
     8187178713239,  # Alice Munro Collection: 5-Volume Boxset
     8192143884439,  # Disney Frozen Storybook Collection
     8217014337687,  # Fearless Fred's Big Adventures 4-Volume Bundle
-    8217015419031   # Les P'tites Poules Volumes 1-6 Bundle (Chinese)
+    8217015419031,  # Les P'tites Poules Volumes 1-6 Bundle (Chinese)
+    8440807522455,  # No. 1 Ladies Detective Agency
+    8440808603799   # The Marvelous, Magical Collection of Picture Book Classics
 ]
 
 
@@ -96,7 +98,7 @@ price_exceptions = {
     '7949689520279': 69.00,     # Spike: Into the Light
     '8083359531159': 59.99,     # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
     '8008024850583': 39.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
-    '8008025145495': 49.99,     # Angel and Faith: Season Ten Volume 3 - United
+    '8008025145495': 34.99,     # Angel and Faith: Season Ten Volume 3 - United
     '8008024883351': 44.99,     # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
     '8010714841239': 99.99,     # Sex by Madonna
     '8035475194007': 40.99,     # The Art of Maurice Sendak
