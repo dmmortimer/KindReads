@@ -236,6 +236,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Economics',
         'Education',
         'Empowered Women',
+        'Entertainment',
         'Environment',
         'Essays',
         'Family',
