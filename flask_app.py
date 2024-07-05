@@ -19,15 +19,20 @@ def validatecsv():
     if request.method == "POST":
         csv_file = request.files["csv_file"]
         results = []
+        decodedFileContent = None
         try:
-            results = validate_csv(csv_file)
+            (results,decodedFileContent) = validate_csv(csv_file)
             # save the file in tmp directory - overwrites if already there
             # for possible reuse if user wants to view book covers for the same csv
             # will clean tmp directory periodically, manually or make a script todo
             # assume users won't interfere with each other
+            # save decoded version of the file to avoid utf-8/latin-1 issues later
             saved_fn = secure_filename(csv_file.filename)
-            csv_file.seek(0)
-            csv_file.save(os.path.join(tempfile.gettempdir(), saved_fn))
+            saved_fn_path = os.path.join(tempfile.gettempdir(),saved_fn)
+            decoded_csv_file = open(saved_fn_path, 'w')
+            decoded_csv_file.write(decodedFileContent)
+            decoded_csv_file.close()
+
         except Exception as e:
             results.append('Error reading csv file ' + csv_file.filename + ': ' + str(e))
 

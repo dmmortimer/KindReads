@@ -67,7 +67,7 @@ def validate_csv(csv_file):
     else:
         results_lines.append( 'Validated %s items, no errors found' % n)
 
-    return results_lines
+    return (results_lines,fileContent.getvalue())
 
 def imagesrc_list_from_csv(csv_file):
 
@@ -88,6 +88,7 @@ def imagesrc_list_from_csv(csv_file):
         fileContent = StringIO(csv_file.read().decode('latin-1'))
 
     csvreader = csv.reader(fileContent,delimiter=',')
+
     imagesrc_idx = 24   # default, unlikely to change? future-proof just in case
     for row in csvreader:
         if row[0] == 'Handle':
