@@ -185,6 +185,7 @@ nonfiction_only_tags = [
 
 # tags used for fiction submenus on site - can only be used with fiction
 fiction_only_tags = [
+        'Cozy Mystery',	# not a submenu, yet, but clearly fiction only
         'Fantasy',
         'Fantasy & Sci-Fi',
         'Graphic Novel',
