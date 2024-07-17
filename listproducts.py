@@ -20,20 +20,20 @@ def lastname(vendor):
 
     name = vendor
 
-    # ignore everything after first bracket, to handle e.g. Charles Dickens (Introduction by Rosalind Valland)
-    if vendor.find('(')>0:
-        name = vendor[:vendor.find('(')]       # items from the beginning through stop-1
-
     # if a comma-separated list of authors, use the first one
     if vendor.find(',')>0:
         name = vendor[:vendor.find(',')]       # items from the beginning through stop-1
+
+    # ignore everything after first bracket, to handle e.g. Charles Dickens (Introduction by Rosalind Valland)
+    if name.find('(')>0:
+        name = name[:name.find('(')]       # items from the beginning through stop-1
 
     # last name is the last word
     words = name.split()
     ln = words[-1].strip()
 
     # ignore suffixes like MD and Jr.
-    lastname_suffixes = {'Jr.','MD'}
+    lastname_suffixes = {'Jr.','MD','M.D.','Ph.D','Ph.D.','PhD','III'}
     if ln in lastname_suffixes:
         # not gonna work if that's actually their last name, or their whole name, but deal with it if/when
         ln = words[-2].strip()
@@ -54,6 +54,9 @@ if False:
     assert lastname('Charles Dickens (Introduction by Rolalind Valland)') == 'Dickens'
     assert lastname('Vincent van Gogh')== 'van Gogh'
     assert lastname('Cary Fagan, Banafsheh Erfanian')== 'Fagan'
+    assert lastname('Megan Bradley (Editor), James Milner (Editor), Blair Peruniak (Editor)')== 'Bradley'
+    assert lastname('William G. Thomas III') == 'Thomas'
+    assert lastname('Rita Colwell PhD') == 'Colwell'
 
 def log_variant(product,variant,out):
     id = product['id']
