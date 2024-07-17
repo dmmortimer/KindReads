@@ -83,7 +83,8 @@ confirmed_sets_or_false_positives = [
     8217015419031,  # Les P'tites Poules Volumes 1-6 Bundle (Chinese)
     8440807522455,  # No. 1 Ladies Detective Agency
     8440808603799,  # The Marvelous, Magical Collection of Picture Book Classics
-    8473019678871   # Harry Potter Signature Edition 7-Book Box Set
+    8473019678871,  # Harry Potter Signature Edition 7-Book Box Set
+    8479601918103   # Blue's Clues & You 3-Book Set
 ]
 
 
@@ -95,8 +96,8 @@ min_compare_price = 7.99
 # beware, uses product handle (id) as key, not isbn
 # all books tagged Classic or Folio Society bypass the max price check, no need to list as exceptions
 price_exceptions = {
-    '7949689258135': 99.99,     # Angel Illyria Haunted
-    '7949689520279': 69.00,     # Spike: Into the Light
+    '7949689258135': 49.99,     # Angel Illyria Haunted
+    '7949689520279': 39.99,     # Spike: Into the Light
     '8083359531159': 59.99,     # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
     '8008024850583': 39.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
     '8008025145495': 34.99,     # Angel and Faith: Season Ten Volume 3 - United
