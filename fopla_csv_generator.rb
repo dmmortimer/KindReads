@@ -129,6 +129,8 @@ class Fopla
           weight_grams = weight_pounds*454
           weight_grams_rounded = weight_grams.round()
           weight_grams_rounded
+				elsif profile['dimensions_structured']['weight']['unit'] == 'g'
+					profile['dimensions_structured']['weight']['value']
         else
           puts "Unrecognized weight units #{profile['dimensions_structured']['weight']['unit']}, weight set to 0"
           0
