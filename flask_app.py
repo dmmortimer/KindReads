@@ -20,6 +20,7 @@ def validatecsv():
         csv_file = request.files["csv_file"]
         results = []
         decodedFileContent = None
+        saved_fn = ''
         try:
             (results,decodedFileContent) = validate_csv(csv_file)
             # save the file in tmp directory - overwrites if already there

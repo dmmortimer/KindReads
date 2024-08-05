@@ -38,8 +38,8 @@ def validate_csv(csv_file):
     title_idx = 1   # Title
     author_idx = 3  # Vendor
     tags_idx = 5    # Tags
-    price_idx = 19  # Variant Price
-    compareprice_idx = 20   # Variant Compare At Price
+    price_idx = 13  # Variant Price
+    compareprice_idx = 20   # Variant Compare At Price - obsolete, we stopped using in August 2024
 
     for row in csvreader:
         if row[isbn_idx] == 'Handle':
@@ -54,7 +54,8 @@ def validate_csv(csv_file):
         if row[price_idx] !='':
             price = float(row[price_idx].lstrip('$'))
         compareprice = 0
-        if row[compareprice_idx] !='':
+        # old code for compare-at price - we stopped using this in August 2024
+        if False and row[compareprice_idx] !='':
             compareprice = float(row[compareprice_idx].lstrip('$'))
         errors = validate_before_import(tags,price,compareprice,title,author,isbn)
         if len(errors)>0:
