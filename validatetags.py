@@ -84,7 +84,8 @@ confirmed_sets_or_false_positives = [
     8440807522455,  # No. 1 Ladies Detective Agency
     8440808603799,  # The Marvelous, Magical Collection of Picture Book Classics
     8473019678871,  # Harry Potter Signature Edition 7-Book Box Set
-    8479601918103   # Blue's Clues & You 3-Book Set
+    8479601918103,  # Blue's Clues & You 3-Book Set
+    8491547525271   # Leonard Cohen Box Set: The Flame and Book of Longing
 ]
 
 
