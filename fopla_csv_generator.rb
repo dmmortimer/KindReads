@@ -109,6 +109,7 @@ class Fopla
         image: profile['image'] || 'N/A',
         synopsys: profile['synopsys'] || profile['overview'] || double_check_isbn_13(profile),
         weight: format_weight(profile),
+        binding: format_binding(profile),
       }
 
 
@@ -137,6 +138,19 @@ class Fopla
         end
       else
         0
+      end
+    end
+
+    def format_binding(profile)
+      if profile['binding']
+        if profile['binding'] == 'Hardcover' || profile['binding'] == 'Paperback'
+          profile['binding']
+        else
+          puts "Unrecognized binding #{profile['binding']}, setting to N/A for now"
+          'N/A'
+        end
+      else
+        'N/A'
       end
     end
 
@@ -221,7 +235,8 @@ class Fopla
 
     def generate_html_body(profile)
       formatted = profile[:synopsys].downcase.split(/(?<=[?.!])\s*/).map(&:capitalize).join(" ")
-      "#{formatted}<strong>Publisher: </strong>#{profile[:publisher]}"
+      "#{formatted}<strong>Publisher: </strong>#{profile[:publisher]}" \
+        "<br><br><strong>Binding: </strong>#{profile[:binding]}"
     end
   end
 end
