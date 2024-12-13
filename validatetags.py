@@ -43,7 +43,8 @@ pot_pourri = [
     8146422431895,  # Pot-Pourri 2020
     7326988370071,  # Pot-Pourri 2021
     7869301096599,  # Pot-Pourri 2022
-    8335634563223   # Pot-Pourri 2023
+    8335634563223,  # Pot-Pourri 2023
+    8673911931031   # Pot-Pourri 2024
 ]
 
 # Title words indicating possible multi-book item
@@ -85,7 +86,8 @@ confirmed_sets_or_false_positives = [
     8440808603799,  # The Marvelous, Magical Collection of Picture Book Classics
     8473019678871,  # Harry Potter Signature Edition 7-Book Box Set
     8479601918103,  # Blue's Clues & You 3-Book Set
-    8491547525271   # Leonard Cohen Box Set: The Flame and Book of Longing
+    8491547525271,  # Leonard Cohen Box Set: The Flame and Book of Longing
+    8608153567383   # The Age of Illumination 3 Volume Boxed Set
 ]
 
 
@@ -97,10 +99,10 @@ min_compare_price = 7.99
 # beware, uses product handle (id) as key, not isbn
 # all books tagged Classic or Folio Society bypass the max price check, no need to list as exceptions
 price_exceptions = {
-    '7949689258135': 49.99,     # Angel Illyria Haunted
+    '7949689258135':  9.99,     # Angel Illyria Haunted
     '7949689520279': 39.99,     # Spike: Into the Light
     '8083359531159': 59.99,     # Trinity: The Man of Steel, The Dark Knight, The Amazing Amazon (3 Volumes)
-    '8008024850583': 39.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
+    '8008024850583':  9.99,     # Angel and Faith: Season Ten Volume 1: Where the River Meets the Sea (Angel & Faith)
     '8008025145495': 34.99,     # Angel and Faith: Season Ten Volume 3 - United
     '8008024883351': 44.99,     # Buffy: Season Ten Volume 3 Love Dares You (Buffy the Vampire Slayer)
     '8010714841239': 99.99,     # Sex by Madonna
@@ -267,6 +269,7 @@ known_tags = parent_tags + kids_age_tags + language_tags + nonfiction_only_tags 
         'Photography',
         'Police',
         'Psychology',
+        'Puzzles',
         'Queer',
         'Religion',
         'Science',
